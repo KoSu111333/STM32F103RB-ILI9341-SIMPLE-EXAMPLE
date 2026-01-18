@@ -1,0 +1,4 @@
+../Src/uart.c:16:6:UART2_init	1
+../Src/uart.c:50:6:UART2_transmit_char	2
+../Src/uart.c:62:6:UART2_transmit_string	2
+../Src/uart.c:73:6:UART2_transmit_int	5

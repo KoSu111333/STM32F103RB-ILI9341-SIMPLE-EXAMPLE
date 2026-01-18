@@ -1,0 +1,2415 @@
+
+ILI9341.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .isr_vector   00000130  08000000  08000000  00001000  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  1 .text         00000e80  08000130  08000130  00001130  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .rodata       0000032c  08000fb0  08000fb0  00001fb0  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 .ARM.extab    00000000  080012dc  080012dc  000022e4  2**0
+                  CONTENTS, READONLY
+  4 .ARM          00000000  080012dc  080012dc  000022e4  2**0
+                  CONTENTS, READONLY
+  5 .preinit_array 00000000  080012dc  080012e4  000022e4  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  6 .init_array   00000004  080012dc  080012dc  000022dc  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  7 .fini_array   00000004  080012e0  080012e0  000022e0  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  8 .data         00000000  20000000  20000000  000022e4  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  9 .bss          00000020  20000000  080012e4  00003000  2**2
+                  ALLOC
+ 10 ._user_heap_stack 00000600  20000020  080012e4  00003020  2**0
+                  ALLOC
+ 11 .ARM.attributes 00000029  00000000  00000000  000022e4  2**0
+                  CONTENTS, READONLY
+ 12 .debug_info   00001cd1  00000000  00000000  0000230d  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 13 .debug_abbrev 000008a7  00000000  00000000  00003fde  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 14 .debug_aranges 000001b0  00000000  00000000  00004888  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 15 .debug_rnglists 00000131  00000000  00000000  00004a38  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 16 .debug_macro  0001057c  00000000  00000000  00004b69  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 17 .debug_line   00001f65  00000000  00000000  000150e5  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 18 .debug_str    00054e12  00000000  00000000  0001704a  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 19 .comment      00000043  00000000  00000000  0006be5c  2**0
+                  CONTENTS, READONLY
+ 20 .debug_frame  00000528  00000000  00000000  0006bea0  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 21 .debug_line_str 00000055  00000000  00000000  0006c3c8  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+
+Disassembly of section .text:
+
+08000130 <__do_global_dtors_aux>:
+ 8000130:	b510      	push	{r4, lr}
+ 8000132:	4c05      	ldr	r4, [pc, #20]	@ (8000148 <__do_global_dtors_aux+0x18>)
+ 8000134:	7823      	ldrb	r3, [r4, #0]
+ 8000136:	b933      	cbnz	r3, 8000146 <__do_global_dtors_aux+0x16>
+ 8000138:	4b04      	ldr	r3, [pc, #16]	@ (800014c <__do_global_dtors_aux+0x1c>)
+ 800013a:	b113      	cbz	r3, 8000142 <__do_global_dtors_aux+0x12>
+ 800013c:	4804      	ldr	r0, [pc, #16]	@ (8000150 <__do_global_dtors_aux+0x20>)
+ 800013e:	f3af 8000 	nop.w
+ 8000142:	2301      	movs	r3, #1
+ 8000144:	7023      	strb	r3, [r4, #0]
+ 8000146:	bd10      	pop	{r4, pc}
+ 8000148:	20000000 	.word	0x20000000
+ 800014c:	00000000 	.word	0x00000000
+ 8000150:	08000f98 	.word	0x08000f98
+
+08000154 <frame_dummy>:
+ 8000154:	b508      	push	{r3, lr}
+ 8000156:	4b03      	ldr	r3, [pc, #12]	@ (8000164 <frame_dummy+0x10>)
+ 8000158:	b11b      	cbz	r3, 8000162 <frame_dummy+0xe>
+ 800015a:	4903      	ldr	r1, [pc, #12]	@ (8000168 <frame_dummy+0x14>)
+ 800015c:	4803      	ldr	r0, [pc, #12]	@ (800016c <frame_dummy+0x18>)
+ 800015e:	f3af 8000 	nop.w
+ 8000162:	bd08      	pop	{r3, pc}
+ 8000164:	00000000 	.word	0x00000000
+ 8000168:	20000004 	.word	0x20000004
+ 800016c:	08000f98 	.word	0x08000f98
+
+08000170 <ILI9341_init_pins>:
+#include "ILI_9341.h"
+/**
+  * @brief ILI9341 제어 핀들을 GPIO 출력으로 초기화
+  */
+void ILI9341_init_pins(void) {
+ 8000170:	b580      	push	{r7, lr}
+ 8000172:	af00      	add	r7, sp, #0
+    // ILI9341 제어 핀들 (CS, DC, RST, BL) 초기화
+    // PA4 (CS)
+    init_gpio(ILI9341_CS_PORT, ILI9341_CS_PIN, GPIO_MODE_OUTPUT_50MHZ_VAL, GPIO_CNF_GP_PP_OUT);
+ 8000174:	2300      	movs	r3, #0
+ 8000176:	2203      	movs	r2, #3
+ 8000178:	2110      	movs	r1, #16
+ 800017a:	4809      	ldr	r0, [pc, #36]	@ (80001a0 <ILI9341_init_pins+0x30>)
+ 800017c:	f000 fa34 	bl	80005e8 <init_gpio>
+    ILI9341_CS_Disable();
+ 8000180:	f000 f81e 	bl	80001c0 <ILI9341_CS_Disable>
+    // PB1 (DC)
+    init_gpio(ILI9341_DC_PORT, ILI9341_DC_PIN, GPIO_MODE_OUTPUT_50MHZ_VAL, GPIO_CNF_GP_PP_OUT);
+ 8000184:	2300      	movs	r3, #0
+ 8000186:	2203      	movs	r2, #3
+ 8000188:	2102      	movs	r1, #2
+ 800018a:	4806      	ldr	r0, [pc, #24]	@ (80001a4 <ILI9341_init_pins+0x34>)
+ 800018c:	f000 fa2c 	bl	80005e8 <init_gpio>
+    // PB0 (RST)
+    init_gpio(ILI9341_RST_PORT, ILI9341_RST_PIN, GPIO_MODE_OUTPUT_50MHZ_VAL, GPIO_CNF_GP_PP_OUT);
+ 8000190:	2300      	movs	r3, #0
+ 8000192:	2203      	movs	r2, #3
+ 8000194:	2101      	movs	r1, #1
+ 8000196:	4803      	ldr	r0, [pc, #12]	@ (80001a4 <ILI9341_init_pins+0x34>)
+ 8000198:	f000 fa26 	bl	80005e8 <init_gpio>
+    // PB2 (BL)
+}
+ 800019c:	bf00      	nop
+ 800019e:	bd80      	pop	{r7, pc}
+ 80001a0:	40010800 	.word	0x40010800
+ 80001a4:	40010c00 	.word	0x40010c00
+
+080001a8 <ILI9341_CS_Enable>:
+
+// ILI9341_CS 핀 제어
+void ILI9341_CS_Enable(void) {
+ 80001a8:	b580      	push	{r7, lr}
+ 80001aa:	af00      	add	r7, sp, #0
+    GPIO_WritePin(ILI9341_CS_PORT, ILI9341_CS_PIN, GPIO_PIN_RESET); // CS LOW (칩 선택)
+ 80001ac:	2200      	movs	r2, #0
+ 80001ae:	2110      	movs	r1, #16
+ 80001b0:	4802      	ldr	r0, [pc, #8]	@ (80001bc <ILI9341_CS_Enable+0x14>)
+ 80001b2:	f000 fab9 	bl	8000728 <GPIO_WritePin>
+}
+ 80001b6:	bf00      	nop
+ 80001b8:	bd80      	pop	{r7, pc}
+ 80001ba:	bf00      	nop
+ 80001bc:	40010800 	.word	0x40010800
+
+080001c0 <ILI9341_CS_Disable>:
+void ILI9341_CS_Disable(void) {
+ 80001c0:	b580      	push	{r7, lr}
+ 80001c2:	af00      	add	r7, sp, #0
+    GPIO_WritePin(ILI9341_CS_PORT, ILI9341_CS_PIN, GPIO_PIN_SET);   // CS HIGH (칩 선택 해제)
+ 80001c4:	2201      	movs	r2, #1
+ 80001c6:	2110      	movs	r1, #16
+ 80001c8:	4802      	ldr	r0, [pc, #8]	@ (80001d4 <ILI9341_CS_Disable+0x14>)
+ 80001ca:	f000 faad 	bl	8000728 <GPIO_WritePin>
+}
+ 80001ce:	bf00      	nop
+ 80001d0:	bd80      	pop	{r7, pc}
+ 80001d2:	bf00      	nop
+ 80001d4:	40010800 	.word	0x40010800
+
+080001d8 <ILI9341_DC_Set>:
+
+// ILI9341_DC 핀 제어
+void ILI9341_DC_Set(void) {
+ 80001d8:	b580      	push	{r7, lr}
+ 80001da:	af00      	add	r7, sp, #0
+    GPIO_WritePin(ILI9341_DC_PORT, ILI9341_DC_PIN, GPIO_PIN_SET);   // DC HIGH (데이터 모드)
+ 80001dc:	2201      	movs	r2, #1
+ 80001de:	2102      	movs	r1, #2
+ 80001e0:	4802      	ldr	r0, [pc, #8]	@ (80001ec <ILI9341_DC_Set+0x14>)
+ 80001e2:	f000 faa1 	bl	8000728 <GPIO_WritePin>
+}
+ 80001e6:	bf00      	nop
+ 80001e8:	bd80      	pop	{r7, pc}
+ 80001ea:	bf00      	nop
+ 80001ec:	40010c00 	.word	0x40010c00
+
+080001f0 <ILI9341_DC_Reset>:
+void ILI9341_DC_Reset(void) {
+ 80001f0:	b580      	push	{r7, lr}
+ 80001f2:	af00      	add	r7, sp, #0
+    GPIO_WritePin(ILI9341_DC_PORT, ILI9341_DC_PIN, GPIO_PIN_RESET); // DC LOW (명령 모드)
+ 80001f4:	2200      	movs	r2, #0
+ 80001f6:	2102      	movs	r1, #2
+ 80001f8:	4802      	ldr	r0, [pc, #8]	@ (8000204 <ILI9341_DC_Reset+0x14>)
+ 80001fa:	f000 fa95 	bl	8000728 <GPIO_WritePin>
+}
+ 80001fe:	bf00      	nop
+ 8000200:	bd80      	pop	{r7, pc}
+ 8000202:	bf00      	nop
+ 8000204:	40010c00 	.word	0x40010c00
+
+08000208 <ILI9341_RST_Set>:
+
+// ILI9341_RST 핀 제어
+void ILI9341_RST_Set(void) {
+ 8000208:	b580      	push	{r7, lr}
+ 800020a:	af00      	add	r7, sp, #0
+    GPIO_WritePin(ILI9341_RST_PORT, ILI9341_RST_PIN, GPIO_PIN_SET); // RST HIGH
+ 800020c:	2201      	movs	r2, #1
+ 800020e:	2101      	movs	r1, #1
+ 8000210:	4802      	ldr	r0, [pc, #8]	@ (800021c <ILI9341_RST_Set+0x14>)
+ 8000212:	f000 fa89 	bl	8000728 <GPIO_WritePin>
+}
+ 8000216:	bf00      	nop
+ 8000218:	bd80      	pop	{r7, pc}
+ 800021a:	bf00      	nop
+ 800021c:	40010c00 	.word	0x40010c00
+
+08000220 <ILI9341_RST_Reset>:
+void ILI9341_RST_Reset(void) {
+ 8000220:	b580      	push	{r7, lr}
+ 8000222:	af00      	add	r7, sp, #0
+    GPIO_WritePin(ILI9341_RST_PORT, ILI9341_RST_PIN, GPIO_PIN_RESET); // RST LOW
+ 8000224:	2200      	movs	r2, #0
+ 8000226:	2101      	movs	r1, #1
+ 8000228:	4802      	ldr	r0, [pc, #8]	@ (8000234 <ILI9341_RST_Reset+0x14>)
+ 800022a:	f000 fa7d 	bl	8000728 <GPIO_WritePin>
+}
+ 800022e:	bf00      	nop
+ 8000230:	bd80      	pop	{r7, pc}
+ 8000232:	bf00      	nop
+ 8000234:	40010c00 	.word	0x40010c00
+
+08000238 <ILI9341_WriteCommand>:
+
+/**
+  * @brief ILI9341에 명령 바이트를 전송
+  * @param cmd: 전송할 명령 (8비트)
+  */
+void ILI9341_WriteCommand(uint8_t cmd) {
+ 8000238:	b580      	push	{r7, lr}
+ 800023a:	b082      	sub	sp, #8
+ 800023c:	af00      	add	r7, sp, #0
+ 800023e:	4603      	mov	r3, r0
+ 8000240:	71fb      	strb	r3, [r7, #7]
+    ILI9341_CS_Enable();  // CS LOW
+ 8000242:	f7ff ffb1 	bl	80001a8 <ILI9341_CS_Enable>
+    ILI9341_DC_Reset(); // DC LOW (명령 모드)
+ 8000246:	f7ff ffd3 	bl	80001f0 <ILI9341_DC_Reset>
+    SPI1_transfer(cmd);   // SPI로 명령 전송
+ 800024a:	79fb      	ldrb	r3, [r7, #7]
+ 800024c:	4618      	mov	r0, r3
+ 800024e:	f000 fd8d 	bl	8000d6c <SPI1_transfer>
+    ILI9341_CS_Disable(); // CS HIGH
+ 8000252:	f7ff ffb5 	bl	80001c0 <ILI9341_CS_Disable>
+}
+ 8000256:	bf00      	nop
+ 8000258:	3708      	adds	r7, #8
+ 800025a:	46bd      	mov	sp, r7
+ 800025c:	bd80      	pop	{r7, pc}
+
+0800025e <ILI9341_WriteData>:
+
+/**
+  * @brief ILI9341에 데이터 바이트를 전송
+  * @param data: 전송할 데이터 (8비트)
+  */
+void ILI9341_WriteData(uint8_t data) {
+ 800025e:	b580      	push	{r7, lr}
+ 8000260:	b082      	sub	sp, #8
+ 8000262:	af00      	add	r7, sp, #0
+ 8000264:	4603      	mov	r3, r0
+ 8000266:	71fb      	strb	r3, [r7, #7]
+    ILI9341_CS_Enable();  // CS LOW
+ 8000268:	f7ff ff9e 	bl	80001a8 <ILI9341_CS_Enable>
+    ILI9341_DC_Set();     // DC HIGH (데이터 모드)
+ 800026c:	f7ff ffb4 	bl	80001d8 <ILI9341_DC_Set>
+    SPI1_transfer(data);  // SPI로 데이터 전송
+ 8000270:	79fb      	ldrb	r3, [r7, #7]
+ 8000272:	4618      	mov	r0, r3
+ 8000274:	f000 fd7a 	bl	8000d6c <SPI1_transfer>
+    ILI9341_CS_Disable(); // CS HIGH
+ 8000278:	f7ff ffa2 	bl	80001c0 <ILI9341_CS_Disable>
+}
+ 800027c:	bf00      	nop
+ 800027e:	3708      	adds	r7, #8
+ 8000280:	46bd      	mov	sp, r7
+ 8000282:	bd80      	pop	{r7, pc}
+
+08000284 <ILI9341_init>:
+
+
+/**
+  * @brief ILI9341 LCD 초기화 시퀀스 (데이터시트 참조)
+  */
+void ILI9341_init(void) {
+ 8000284:	b580      	push	{r7, lr}
+ 8000286:	af00      	add	r7, sp, #0
+    // 1. 하드웨어 리셋
+    ILI9341_RST_Set();   // RST HIGH
+ 8000288:	f7ff ffbe 	bl	8000208 <ILI9341_RST_Set>
+    delay_ms(5);
+ 800028c:	2005      	movs	r0, #5
+ 800028e:	f000 fac1 	bl	8000814 <delay_ms>
+    ILI9341_RST_Reset(); // RST LOW
+ 8000292:	f7ff ffc5 	bl	8000220 <ILI9341_RST_Reset>
+    delay_ms(20);
+ 8000296:	2014      	movs	r0, #20
+ 8000298:	f000 fabc 	bl	8000814 <delay_ms>
+    ILI9341_RST_Set();   // RST HIGH
+ 800029c:	f7ff ffb4 	bl	8000208 <ILI9341_RST_Set>
+    delay_ms(150);       // 리셋 후 대기
+ 80002a0:	2096      	movs	r0, #150	@ 0x96
+ 80002a2:	f000 fab7 	bl	8000814 <delay_ms>
+
+    // 2. 소프트웨어 리셋
+    ILI9341_WriteCommand(ILI9341_SWRESET); // 소프트웨어 리셋 명령
+ 80002a6:	2001      	movs	r0, #1
+ 80002a8:	f7ff ffc6 	bl	8000238 <ILI9341_WriteCommand>
+    delay_ms(150);
+ 80002ac:	2096      	movs	r0, #150	@ 0x96
+ 80002ae:	f000 fab1 	bl	8000814 <delay_ms>
+
+    // 3. Sleep Out
+    ILI9341_WriteCommand(ILI9341_SLPOUT); // Sleep Out 명령
+ 80002b2:	2011      	movs	r0, #17
+ 80002b4:	f7ff ffc0 	bl	8000238 <ILI9341_WriteCommand>
+    delay_ms(150);
+ 80002b8:	2096      	movs	r0, #150	@ 0x96
+ 80002ba:	f000 faab 	bl	8000814 <delay_ms>
+
+    // 4. Power Control A
+    ILI9341_WriteCommand(0xCB);
+ 80002be:	20cb      	movs	r0, #203	@ 0xcb
+ 80002c0:	f7ff ffba 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x39);
+ 80002c4:	2039      	movs	r0, #57	@ 0x39
+ 80002c6:	f7ff ffca 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x2C);
+ 80002ca:	202c      	movs	r0, #44	@ 0x2c
+ 80002cc:	f7ff ffc7 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x00);
+ 80002d0:	2000      	movs	r0, #0
+ 80002d2:	f7ff ffc4 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x34);
+ 80002d6:	2034      	movs	r0, #52	@ 0x34
+ 80002d8:	f7ff ffc1 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x02);
+ 80002dc:	2002      	movs	r0, #2
+ 80002de:	f7ff ffbe 	bl	800025e <ILI9341_WriteData>
+
+    // 5. Power Control B
+    ILI9341_WriteCommand(0xCF);
+ 80002e2:	20cf      	movs	r0, #207	@ 0xcf
+ 80002e4:	f7ff ffa8 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x00);
+ 80002e8:	2000      	movs	r0, #0
+ 80002ea:	f7ff ffb8 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0xC1);
+ 80002ee:	20c1      	movs	r0, #193	@ 0xc1
+ 80002f0:	f7ff ffb5 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x30);
+ 80002f4:	2030      	movs	r0, #48	@ 0x30
+ 80002f6:	f7ff ffb2 	bl	800025e <ILI9341_WriteData>
+
+    // 6. Driver timing control A
+    ILI9341_WriteCommand(0xE8);
+ 80002fa:	20e8      	movs	r0, #232	@ 0xe8
+ 80002fc:	f7ff ff9c 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x85);
+ 8000300:	2085      	movs	r0, #133	@ 0x85
+ 8000302:	f7ff ffac 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x00);
+ 8000306:	2000      	movs	r0, #0
+ 8000308:	f7ff ffa9 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x78);
+ 800030c:	2078      	movs	r0, #120	@ 0x78
+ 800030e:	f7ff ffa6 	bl	800025e <ILI9341_WriteData>
+
+    // 7. Driver timing control B
+    ILI9341_WriteCommand(0xEA);
+ 8000312:	20ea      	movs	r0, #234	@ 0xea
+ 8000314:	f7ff ff90 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x00);
+ 8000318:	2000      	movs	r0, #0
+ 800031a:	f7ff ffa0 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x00);
+ 800031e:	2000      	movs	r0, #0
+ 8000320:	f7ff ff9d 	bl	800025e <ILI9341_WriteData>
+
+    // 8. Power on Sequence control
+    ILI9341_WriteCommand(0xED);
+ 8000324:	20ed      	movs	r0, #237	@ 0xed
+ 8000326:	f7ff ff87 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x64);
+ 800032a:	2064      	movs	r0, #100	@ 0x64
+ 800032c:	f7ff ff97 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x03);
+ 8000330:	2003      	movs	r0, #3
+ 8000332:	f7ff ff94 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x12);
+ 8000336:	2012      	movs	r0, #18
+ 8000338:	f7ff ff91 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x81);
+ 800033c:	2081      	movs	r0, #129	@ 0x81
+ 800033e:	f7ff ff8e 	bl	800025e <ILI9341_WriteData>
+
+    // 9. Pump ratio control
+    ILI9341_WriteCommand(0xF7);
+ 8000342:	20f7      	movs	r0, #247	@ 0xf7
+ 8000344:	f7ff ff78 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x20);
+ 8000348:	2020      	movs	r0, #32
+ 800034a:	f7ff ff88 	bl	800025e <ILI9341_WriteData>
+
+    // 10. Power Control 1 (Vcore)
+    ILI9341_WriteCommand(ILI9341_PWCTR1);
+ 800034e:	20c0      	movs	r0, #192	@ 0xc0
+ 8000350:	f7ff ff72 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x23); // VRH[5:0]
+ 8000354:	2023      	movs	r0, #35	@ 0x23
+ 8000356:	f7ff ff82 	bl	800025e <ILI9341_WriteData>
+
+    // 11. Power Control 2 (VGH, VGL)
+    ILI9341_WriteCommand(ILI9341_PWCTR2);
+ 800035a:	20c1      	movs	r0, #193	@ 0xc1
+ 800035c:	f7ff ff6c 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x10); // SAP[2:0];BT[3:0]
+ 8000360:	2010      	movs	r0, #16
+ 8000362:	f7ff ff7c 	bl	800025e <ILI9341_WriteData>
+
+    // 12. VCOM Control 1
+    ILI9341_WriteCommand(ILI9341_VMCTR1);
+ 8000366:	20c5      	movs	r0, #197	@ 0xc5
+ 8000368:	f7ff ff66 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x3E); // VMF[6:0]
+ 800036c:	203e      	movs	r0, #62	@ 0x3e
+ 800036e:	f7ff ff76 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x28); // VML[6:0]
+ 8000372:	2028      	movs	r0, #40	@ 0x28
+ 8000374:	f7ff ff73 	bl	800025e <ILI9341_WriteData>
+    // 13. VCOM Control 2
+    ILI9341_WriteCommand(0xC7);
+ 8000378:	20c7      	movs	r0, #199	@ 0xc7
+ 800037a:	f7ff ff5d 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x86); // VMF
+ 800037e:	2086      	movs	r0, #134	@ 0x86
+ 8000380:	f7ff ff6d 	bl	800025e <ILI9341_WriteData>
+
+    // 14. Memory Access Control (MADCTL)
+    ILI9341_WriteCommand(ILI9341_MADCTL);
+ 8000384:	2036      	movs	r0, #54	@ 0x36
+ 8000386:	f7ff ff57 	bl	8000238 <ILI9341_WriteCommand>
+    // Set for Portrait mode, BGR color order
+    // 0x48 = MX (0), MV (1), MY (0), BGR (1) = Landscape (MV=1)
+    // 0x28 = MX (0), MV (0), MY (0), BGR (1) = Portrait (BGR)
+    // 0x08 = MX (0), MV (0), MY (0), BGR (1) = Portrait (RGB)
+    // For standard portrait (top-down, left-right, BGR): 0b00101000 = 0x28
+    ILI9341_WriteData(0x88); // 기본값: 0x28 (Portrait, BGR)
+ 800038a:	2088      	movs	r0, #136	@ 0x88
+ 800038c:	f7ff ff67 	bl	800025e <ILI9341_WriteData>
+
+    // 15. Pixel Format Set
+    ILI9341_WriteCommand(ILI9341_PIXFMT);
+ 8000390:	203a      	movs	r0, #58	@ 0x3a
+ 8000392:	f7ff ff51 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x55); // 16bit/pixel (RGB565)
+ 8000396:	2055      	movs	r0, #85	@ 0x55
+ 8000398:	f7ff ff61 	bl	800025e <ILI9341_WriteData>
+
+    // 16. Frame Rate Control (In Normal Mode/Full Colors)
+    ILI9341_WriteCommand(ILI9341_FRMCTR1);
+ 800039c:	20b1      	movs	r0, #177	@ 0xb1
+ 800039e:	f7ff ff4b 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x00);
+ 80003a2:	2000      	movs	r0, #0
+ 80003a4:	f7ff ff5b 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x18); // 70Hz
+ 80003a8:	2018      	movs	r0, #24
+ 80003aa:	f7ff ff58 	bl	800025e <ILI9341_WriteData>
+
+    // 17. Display Function Control
+    ILI9341_WriteCommand(ILI9341_DFUNCTR);
+ 80003ae:	20b6      	movs	r0, #182	@ 0xb6
+ 80003b0:	f7ff ff42 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x08); // Display inversion control, normally (0x08)
+ 80003b4:	2008      	movs	r0, #8
+ 80003b6:	f7ff ff52 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x82); // Gate scan reverse
+ 80003ba:	2082      	movs	r0, #130	@ 0x82
+ 80003bc:	f7ff ff4f 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x27);
+ 80003c0:	2027      	movs	r0, #39	@ 0x27
+ 80003c2:	f7ff ff4c 	bl	800025e <ILI9341_WriteData>
+
+    // 18. Gamma Function Disable
+    ILI9341_WriteCommand(0xF2);
+ 80003c6:	20f2      	movs	r0, #242	@ 0xf2
+ 80003c8:	f7ff ff36 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x00);
+ 80003cc:	2000      	movs	r0, #0
+ 80003ce:	f7ff ff46 	bl	800025e <ILI9341_WriteData>
+
+    // 19. Gamma Correction Positive Pole
+    ILI9341_WriteCommand(ILI9341_GMCTRP1);
+ 80003d2:	20e0      	movs	r0, #224	@ 0xe0
+ 80003d4:	f7ff ff30 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x0F);
+ 80003d8:	200f      	movs	r0, #15
+ 80003da:	f7ff ff40 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x31);
+ 80003de:	2031      	movs	r0, #49	@ 0x31
+ 80003e0:	f7ff ff3d 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x2B);
+ 80003e4:	202b      	movs	r0, #43	@ 0x2b
+ 80003e6:	f7ff ff3a 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x0C);
+ 80003ea:	200c      	movs	r0, #12
+ 80003ec:	f7ff ff37 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x0E);
+ 80003f0:	200e      	movs	r0, #14
+ 80003f2:	f7ff ff34 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x08);
+ 80003f6:	2008      	movs	r0, #8
+ 80003f8:	f7ff ff31 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x4E);
+ 80003fc:	204e      	movs	r0, #78	@ 0x4e
+ 80003fe:	f7ff ff2e 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0xF1);
+ 8000402:	20f1      	movs	r0, #241	@ 0xf1
+ 8000404:	f7ff ff2b 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x37);
+ 8000408:	2037      	movs	r0, #55	@ 0x37
+ 800040a:	f7ff ff28 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x07);
+ 800040e:	2007      	movs	r0, #7
+ 8000410:	f7ff ff25 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x10);
+ 8000414:	2010      	movs	r0, #16
+ 8000416:	f7ff ff22 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x03);
+ 800041a:	2003      	movs	r0, #3
+ 800041c:	f7ff ff1f 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x0E);
+ 8000420:	200e      	movs	r0, #14
+ 8000422:	f7ff ff1c 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x09);
+ 8000426:	2009      	movs	r0, #9
+ 8000428:	f7ff ff19 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x00);
+ 800042c:	2000      	movs	r0, #0
+ 800042e:	f7ff ff16 	bl	800025e <ILI9341_WriteData>
+
+    // 20. Gamma Correction Negative Pole
+    ILI9341_WriteCommand(ILI9341_GMCTRN1);
+ 8000432:	20e1      	movs	r0, #225	@ 0xe1
+ 8000434:	f7ff ff00 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(0x00);
+ 8000438:	2000      	movs	r0, #0
+ 800043a:	f7ff ff10 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x0E);
+ 800043e:	200e      	movs	r0, #14
+ 8000440:	f7ff ff0d 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x14);
+ 8000444:	2014      	movs	r0, #20
+ 8000446:	f7ff ff0a 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x03);
+ 800044a:	2003      	movs	r0, #3
+ 800044c:	f7ff ff07 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x11);
+ 8000450:	2011      	movs	r0, #17
+ 8000452:	f7ff ff04 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x07);
+ 8000456:	2007      	movs	r0, #7
+ 8000458:	f7ff ff01 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x31);
+ 800045c:	2031      	movs	r0, #49	@ 0x31
+ 800045e:	f7ff fefe 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0xC1);
+ 8000462:	20c1      	movs	r0, #193	@ 0xc1
+ 8000464:	f7ff fefb 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x48);
+ 8000468:	2048      	movs	r0, #72	@ 0x48
+ 800046a:	f7ff fef8 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x08);
+ 800046e:	2008      	movs	r0, #8
+ 8000470:	f7ff fef5 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x0F);
+ 8000474:	200f      	movs	r0, #15
+ 8000476:	f7ff fef2 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x0C);
+ 800047a:	200c      	movs	r0, #12
+ 800047c:	f7ff feef 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x31);
+ 8000480:	2031      	movs	r0, #49	@ 0x31
+ 8000482:	f7ff feec 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x36);
+ 8000486:	2036      	movs	r0, #54	@ 0x36
+ 8000488:	f7ff fee9 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(0x0F);
+ 800048c:	200f      	movs	r0, #15
+ 800048e:	f7ff fee6 	bl	800025e <ILI9341_WriteData>
+
+    // 21. Display On
+    ILI9341_WriteCommand(ILI9341_DISPON);
+ 8000492:	2029      	movs	r0, #41	@ 0x29
+ 8000494:	f7ff fed0 	bl	8000238 <ILI9341_WriteCommand>
+    delay_ms(150);
+ 8000498:	2096      	movs	r0, #150	@ 0x96
+ 800049a:	f000 f9bb 	bl	8000814 <delay_ms>
+
+}
+ 800049e:	bf00      	nop
+ 80004a0:	bd80      	pop	{r7, pc}
+
+080004a2 <ILI9341_SetAddressWindow>:
+/**
+  * @brief  LCD의 그리기 영역(Address Window)을 설정
+  * @param  x1, y1: 시작점 좌표
+  * @param  x2, y2: 끝점 좌표
+  */
+void ILI9341_SetAddressWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+ 80004a2:	b590      	push	{r4, r7, lr}
+ 80004a4:	b083      	sub	sp, #12
+ 80004a6:	af00      	add	r7, sp, #0
+ 80004a8:	4604      	mov	r4, r0
+ 80004aa:	4608      	mov	r0, r1
+ 80004ac:	4611      	mov	r1, r2
+ 80004ae:	461a      	mov	r2, r3
+ 80004b0:	4623      	mov	r3, r4
+ 80004b2:	80fb      	strh	r3, [r7, #6]
+ 80004b4:	4603      	mov	r3, r0
+ 80004b6:	80bb      	strh	r3, [r7, #4]
+ 80004b8:	460b      	mov	r3, r1
+ 80004ba:	807b      	strh	r3, [r7, #2]
+ 80004bc:	4613      	mov	r3, r2
+ 80004be:	803b      	strh	r3, [r7, #0]
+    ILI9341_WriteCommand(ILI9341_CASET); // Column Address Set
+ 80004c0:	202a      	movs	r0, #42	@ 0x2a
+ 80004c2:	f7ff feb9 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(x1 >> 8); // X start High
+ 80004c6:	88fb      	ldrh	r3, [r7, #6]
+ 80004c8:	0a1b      	lsrs	r3, r3, #8
+ 80004ca:	b29b      	uxth	r3, r3
+ 80004cc:	b2db      	uxtb	r3, r3
+ 80004ce:	4618      	mov	r0, r3
+ 80004d0:	f7ff fec5 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(x1 & 0xFF); // X start Low
+ 80004d4:	88fb      	ldrh	r3, [r7, #6]
+ 80004d6:	b2db      	uxtb	r3, r3
+ 80004d8:	4618      	mov	r0, r3
+ 80004da:	f7ff fec0 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(x2 >> 8); // X end High
+ 80004de:	887b      	ldrh	r3, [r7, #2]
+ 80004e0:	0a1b      	lsrs	r3, r3, #8
+ 80004e2:	b29b      	uxth	r3, r3
+ 80004e4:	b2db      	uxtb	r3, r3
+ 80004e6:	4618      	mov	r0, r3
+ 80004e8:	f7ff feb9 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(x2 & 0xFF); // X end Low
+ 80004ec:	887b      	ldrh	r3, [r7, #2]
+ 80004ee:	b2db      	uxtb	r3, r3
+ 80004f0:	4618      	mov	r0, r3
+ 80004f2:	f7ff feb4 	bl	800025e <ILI9341_WriteData>
+
+    ILI9341_WriteCommand(ILI9341_PASET); // Page Address Set
+ 80004f6:	202b      	movs	r0, #43	@ 0x2b
+ 80004f8:	f7ff fe9e 	bl	8000238 <ILI9341_WriteCommand>
+    ILI9341_WriteData(y1 >> 8); // Y start High
+ 80004fc:	88bb      	ldrh	r3, [r7, #4]
+ 80004fe:	0a1b      	lsrs	r3, r3, #8
+ 8000500:	b29b      	uxth	r3, r3
+ 8000502:	b2db      	uxtb	r3, r3
+ 8000504:	4618      	mov	r0, r3
+ 8000506:	f7ff feaa 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(y1 & 0xFF); // Y start Low
+ 800050a:	88bb      	ldrh	r3, [r7, #4]
+ 800050c:	b2db      	uxtb	r3, r3
+ 800050e:	4618      	mov	r0, r3
+ 8000510:	f7ff fea5 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(y2 >> 8); // Y end High
+ 8000514:	883b      	ldrh	r3, [r7, #0]
+ 8000516:	0a1b      	lsrs	r3, r3, #8
+ 8000518:	b29b      	uxth	r3, r3
+ 800051a:	b2db      	uxtb	r3, r3
+ 800051c:	4618      	mov	r0, r3
+ 800051e:	f7ff fe9e 	bl	800025e <ILI9341_WriteData>
+    ILI9341_WriteData(y2 & 0xFF); // Y end Low
+ 8000522:	883b      	ldrh	r3, [r7, #0]
+ 8000524:	b2db      	uxtb	r3, r3
+ 8000526:	4618      	mov	r0, r3
+ 8000528:	f7ff fe99 	bl	800025e <ILI9341_WriteData>
+
+    ILI9341_WriteCommand(ILI9341_RAMWR); // Memory Write
+ 800052c:	202c      	movs	r0, #44	@ 0x2c
+ 800052e:	f7ff fe83 	bl	8000238 <ILI9341_WriteCommand>
+}
+ 8000532:	bf00      	nop
+ 8000534:	370c      	adds	r7, #12
+ 8000536:	46bd      	mov	sp, r7
+ 8000538:	bd90      	pop	{r4, r7, pc}
+
+0800053a <ILI9341_FillScreen>:
+
+/**
+  * @brief  LCD 화면 전체를 단색으로 채움
+  * @param  color: 채울 색상 (16비트 RGB565)
+  */
+void ILI9341_FillScreen(uint16_t color) {
+ 800053a:	b580      	push	{r7, lr}
+ 800053c:	b084      	sub	sp, #16
+ 800053e:	af00      	add	r7, sp, #0
+ 8000540:	4603      	mov	r3, r0
+ 8000542:	80fb      	strh	r3, [r7, #6]
+    uint32_t i;
+    ILI9341_SetAddressWindow(0, 0, ILI9341_WIDTH - 1, ILI9341_HEIGHT - 1); // 전체 화면 영역 설정
+ 8000544:	f240 133f 	movw	r3, #319	@ 0x13f
+ 8000548:	22ef      	movs	r2, #239	@ 0xef
+ 800054a:	2100      	movs	r1, #0
+ 800054c:	2000      	movs	r0, #0
+ 800054e:	f7ff ffa8 	bl	80004a2 <ILI9341_SetAddressWindow>
+    ILI9341_CS_Enable(); // CS LOW
+ 8000552:	f7ff fe29 	bl	80001a8 <ILI9341_CS_Enable>
+    ILI9341_DC_Set();     // DC HIGH (데이터 모드)
+ 8000556:	f7ff fe3f 	bl	80001d8 <ILI9341_DC_Set>
+
+    // 모든 픽셀에 색상 데이터 전송
+    for (i = 0; i < (uint32_t)ILI9341_WIDTH * ILI9341_HEIGHT; i++) {
+ 800055a:	2300      	movs	r3, #0
+ 800055c:	60fb      	str	r3, [r7, #12]
+ 800055e:	e00d      	b.n	800057c <ILI9341_FillScreen+0x42>
+        SPI1_transfer(color >> 8);   // High byte
+ 8000560:	88fb      	ldrh	r3, [r7, #6]
+ 8000562:	0a1b      	lsrs	r3, r3, #8
+ 8000564:	b29b      	uxth	r3, r3
+ 8000566:	4618      	mov	r0, r3
+ 8000568:	f000 fc00 	bl	8000d6c <SPI1_transfer>
+        SPI1_transfer(color & 0xFF); // Low byte
+ 800056c:	88fb      	ldrh	r3, [r7, #6]
+ 800056e:	b2db      	uxtb	r3, r3
+ 8000570:	4618      	mov	r0, r3
+ 8000572:	f000 fbfb 	bl	8000d6c <SPI1_transfer>
+    for (i = 0; i < (uint32_t)ILI9341_WIDTH * ILI9341_HEIGHT; i++) {
+ 8000576:	68fb      	ldr	r3, [r7, #12]
+ 8000578:	3301      	adds	r3, #1
+ 800057a:	60fb      	str	r3, [r7, #12]
+ 800057c:	68fb      	ldr	r3, [r7, #12]
+ 800057e:	f5b3 3f96 	cmp.w	r3, #76800	@ 0x12c00
+ 8000582:	d3ed      	bcc.n	8000560 <ILI9341_FillScreen+0x26>
+    }
+    ILI9341_CS_Disable(); // CS HIGH
+ 8000584:	f7ff fe1c 	bl	80001c0 <ILI9341_CS_Disable>
+}
+ 8000588:	bf00      	nop
+ 800058a:	3710      	adds	r7, #16
+ 800058c:	46bd      	mov	sp, r7
+ 800058e:	bd80      	pop	{r7, pc}
+
+08000590 <ILI9341_DrawPixel>:
+/**
+  * @brief  단일 픽셀을 그림
+  * @param  x, y: 픽셀 좌표
+  * @param  color: 픽셀 색상 (16비트 RGB565)
+  */
+void ILI9341_DrawPixel(uint16_t x, uint16_t y, uint16_t color) {
+ 8000590:	b580      	push	{r7, lr}
+ 8000592:	b082      	sub	sp, #8
+ 8000594:	af00      	add	r7, sp, #0
+ 8000596:	4603      	mov	r3, r0
+ 8000598:	80fb      	strh	r3, [r7, #6]
+ 800059a:	460b      	mov	r3, r1
+ 800059c:	80bb      	strh	r3, [r7, #4]
+ 800059e:	4613      	mov	r3, r2
+ 80005a0:	807b      	strh	r3, [r7, #2]
+    // 좌표가 화면 범위를 벗어나면 그리지 않음
+    if (x >= ILI9341_WIDTH || y >= ILI9341_HEIGHT) return;
+ 80005a2:	88fb      	ldrh	r3, [r7, #6]
+ 80005a4:	2bef      	cmp	r3, #239	@ 0xef
+ 80005a6:	d81b      	bhi.n	80005e0 <ILI9341_DrawPixel+0x50>
+ 80005a8:	88bb      	ldrh	r3, [r7, #4]
+ 80005aa:	f5b3 7fa0 	cmp.w	r3, #320	@ 0x140
+ 80005ae:	d217      	bcs.n	80005e0 <ILI9341_DrawPixel+0x50>
+
+    ILI9341_SetAddressWindow(x, y, x, y); // 단일 픽셀 영역 설정
+ 80005b0:	88bb      	ldrh	r3, [r7, #4]
+ 80005b2:	88fa      	ldrh	r2, [r7, #6]
+ 80005b4:	88b9      	ldrh	r1, [r7, #4]
+ 80005b6:	88f8      	ldrh	r0, [r7, #6]
+ 80005b8:	f7ff ff73 	bl	80004a2 <ILI9341_SetAddressWindow>
+    ILI9341_CS_Enable();  // CS LOW
+ 80005bc:	f7ff fdf4 	bl	80001a8 <ILI9341_CS_Enable>
+    ILI9341_DC_Set();     // DC HIGH
+ 80005c0:	f7ff fe0a 	bl	80001d8 <ILI9341_DC_Set>
+    SPI1_transfer(color >> 8);   // High byte
+ 80005c4:	887b      	ldrh	r3, [r7, #2]
+ 80005c6:	0a1b      	lsrs	r3, r3, #8
+ 80005c8:	b29b      	uxth	r3, r3
+ 80005ca:	4618      	mov	r0, r3
+ 80005cc:	f000 fbce 	bl	8000d6c <SPI1_transfer>
+    SPI1_transfer(color & 0xFF); // Low byte
+ 80005d0:	887b      	ldrh	r3, [r7, #2]
+ 80005d2:	b2db      	uxtb	r3, r3
+ 80005d4:	4618      	mov	r0, r3
+ 80005d6:	f000 fbc9 	bl	8000d6c <SPI1_transfer>
+    ILI9341_CS_Disable(); // CS HIGH
+ 80005da:	f7ff fdf1 	bl	80001c0 <ILI9341_CS_Disable>
+ 80005de:	e000      	b.n	80005e2 <ILI9341_DrawPixel+0x52>
+    if (x >= ILI9341_WIDTH || y >= ILI9341_HEIGHT) return;
+ 80005e0:	bf00      	nop
+}
+ 80005e2:	3708      	adds	r7, #8
+ 80005e4:	46bd      	mov	sp, r7
+ 80005e6:	bd80      	pop	{r7, pc}
+
+080005e8 <init_gpio>:
+  * @param  GPIO_Pin: 초기화할 핀의 비트 마스크 (예: GPIO_PIN_0)
+  * @param  GPIO_Speed_Val: 핀의 출력 속도 설정 (예: GPIO_MODE_OUTPUT_50MHZ_VAL)
+  * @param  GPIO_Cnf_Val: 핀의 컨피규레이션 설정 (예: GPIO_CNF_AF_PP_OUT)
+  * @retval 없음
+  */
+void init_gpio(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, uint8_t GPIO_Speed_Val, uint8_t GPIO_Cnf_Val) {
+ 80005e8:	b480      	push	{r7}
+ 80005ea:	b087      	sub	sp, #28
+ 80005ec:	af00      	add	r7, sp, #0
+ 80005ee:	6078      	str	r0, [r7, #4]
+ 80005f0:	4608      	mov	r0, r1
+ 80005f2:	4611      	mov	r1, r2
+ 80005f4:	461a      	mov	r2, r3
+ 80005f6:	4603      	mov	r3, r0
+ 80005f8:	807b      	strh	r3, [r7, #2]
+ 80005fa:	460b      	mov	r3, r1
+ 80005fc:	707b      	strb	r3, [r7, #1]
+ 80005fe:	4613      	mov	r3, r2
+ 8000600:	703b      	strb	r3, [r7, #0]
+    uint32_t pinpos = 0x00;     // 현재 처리 중인 핀 번호 (0~15)
+ 8000602:	2300      	movs	r3, #0
+ 8000604:	617b      	str	r3, [r7, #20]
+    uint32_t currentpin = 0x00; // GPIO_Pin에 해당하는 비트 마스크
+ 8000606:	2300      	movs	r3, #0
+ 8000608:	613b      	str	r3, [r7, #16]
+    uint32_t tempreg = 0x00;    // CRL 또는 CRH 레지스터 값을 임시 저장할 변수
+ 800060a:	2300      	movs	r3, #0
+ 800060c:	60fb      	str	r3, [r7, #12]
+    uint32_t pin_config = 0x00; // MODE와 CNF 비트를 합친 4비트 설정 값
+ 800060e:	2300      	movs	r3, #0
+ 8000610:	60bb      	str	r3, [r7, #8]
+
+    // 1. 해당 GPIO 포트의 클럭 활성화
+    if (GPIOx == GPIOA) RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+ 8000612:	687b      	ldr	r3, [r7, #4]
+ 8000614:	4a3f      	ldr	r2, [pc, #252]	@ (8000714 <init_gpio+0x12c>)
+ 8000616:	4293      	cmp	r3, r2
+ 8000618:	d106      	bne.n	8000628 <init_gpio+0x40>
+ 800061a:	4b3f      	ldr	r3, [pc, #252]	@ (8000718 <init_gpio+0x130>)
+ 800061c:	699b      	ldr	r3, [r3, #24]
+ 800061e:	4a3e      	ldr	r2, [pc, #248]	@ (8000718 <init_gpio+0x130>)
+ 8000620:	f043 0304 	orr.w	r3, r3, #4
+ 8000624:	6193      	str	r3, [r2, #24]
+ 8000626:	e01f      	b.n	8000668 <init_gpio+0x80>
+    else if (GPIOx == GPIOB) RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
+ 8000628:	687b      	ldr	r3, [r7, #4]
+ 800062a:	4a3c      	ldr	r2, [pc, #240]	@ (800071c <init_gpio+0x134>)
+ 800062c:	4293      	cmp	r3, r2
+ 800062e:	d106      	bne.n	800063e <init_gpio+0x56>
+ 8000630:	4b39      	ldr	r3, [pc, #228]	@ (8000718 <init_gpio+0x130>)
+ 8000632:	699b      	ldr	r3, [r3, #24]
+ 8000634:	4a38      	ldr	r2, [pc, #224]	@ (8000718 <init_gpio+0x130>)
+ 8000636:	f043 0308 	orr.w	r3, r3, #8
+ 800063a:	6193      	str	r3, [r2, #24]
+ 800063c:	e014      	b.n	8000668 <init_gpio+0x80>
+    else if (GPIOx == GPIOC) RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
+ 800063e:	687b      	ldr	r3, [r7, #4]
+ 8000640:	4a37      	ldr	r2, [pc, #220]	@ (8000720 <init_gpio+0x138>)
+ 8000642:	4293      	cmp	r3, r2
+ 8000644:	d106      	bne.n	8000654 <init_gpio+0x6c>
+ 8000646:	4b34      	ldr	r3, [pc, #208]	@ (8000718 <init_gpio+0x130>)
+ 8000648:	699b      	ldr	r3, [r3, #24]
+ 800064a:	4a33      	ldr	r2, [pc, #204]	@ (8000718 <init_gpio+0x130>)
+ 800064c:	f043 0310 	orr.w	r3, r3, #16
+ 8000650:	6193      	str	r3, [r2, #24]
+ 8000652:	e009      	b.n	8000668 <init_gpio+0x80>
+    else if (GPIOx == GPIOD) RCC->APB2ENR |= RCC_APB2ENR_IOPDEN;
+ 8000654:	687b      	ldr	r3, [r7, #4]
+ 8000656:	4a33      	ldr	r2, [pc, #204]	@ (8000724 <init_gpio+0x13c>)
+ 8000658:	4293      	cmp	r3, r2
+ 800065a:	d105      	bne.n	8000668 <init_gpio+0x80>
+ 800065c:	4b2e      	ldr	r3, [pc, #184]	@ (8000718 <init_gpio+0x130>)
+ 800065e:	699b      	ldr	r3, [r3, #24]
+ 8000660:	4a2d      	ldr	r2, [pc, #180]	@ (8000718 <init_gpio+0x130>)
+ 8000662:	f043 0320 	orr.w	r3, r3, #32
+ 8000666:	6193      	str	r3, [r2, #24]
+
+    // 각 핀(0~15)에 대해 반복
+    for (pinpos = 0x00; pinpos < 0x10; pinpos++) {
+ 8000668:	2300      	movs	r3, #0
+ 800066a:	617b      	str	r3, [r7, #20]
+ 800066c:	e048      	b.n	8000700 <init_gpio+0x118>
+        currentpin = (GPIO_Pin & (0x0001 << pinpos)); // GPIO_Pin에 현재 핀이 포함되는지 확인
+ 800066e:	887a      	ldrh	r2, [r7, #2]
+ 8000670:	2101      	movs	r1, #1
+ 8000672:	697b      	ldr	r3, [r7, #20]
+ 8000674:	fa01 f303 	lsl.w	r3, r1, r3
+ 8000678:	4013      	ands	r3, r2
+ 800067a:	613b      	str	r3, [r7, #16]
+        if (currentpin == (0x0001 << pinpos)) { // 현재 핀을 설정해야 한다면
+ 800067c:	2201      	movs	r2, #1
+ 800067e:	697b      	ldr	r3, [r7, #20]
+ 8000680:	409a      	lsls	r2, r3
+ 8000682:	693b      	ldr	r3, [r7, #16]
+ 8000684:	429a      	cmp	r2, r3
+ 8000686:	d138      	bne.n	80006fa <init_gpio+0x112>
+            // MODE (2비트)와 CNF (2비트)를 합쳐 4비트 설정 값 생성
+            // CNF 비트가 상위 2비트, MODE 비트가 하위 2비트
+            pin_config = (GPIO_Cnf_Val << 2) | GPIO_Speed_Val;
+ 8000688:	783b      	ldrb	r3, [r7, #0]
+ 800068a:	009a      	lsls	r2, r3, #2
+ 800068c:	787b      	ldrb	r3, [r7, #1]
+ 800068e:	4313      	orrs	r3, r2
+ 8000690:	60bb      	str	r3, [r7, #8]
+
+            if (pinpos < 8) { // Pin 0-7: CRL (Control Register Low)
+ 8000692:	697b      	ldr	r3, [r7, #20]
+ 8000694:	2b07      	cmp	r3, #7
+ 8000696:	d817      	bhi.n	80006c8 <init_gpio+0xe0>
+                tempreg = GPIOx->CRL;
+ 8000698:	687b      	ldr	r3, [r7, #4]
+ 800069a:	681b      	ldr	r3, [r3, #0]
+ 800069c:	60fb      	str	r3, [r7, #12]
+                // 해당 핀의 4비트(MODE[1:0] + CNF[1:0]) 영역을 0으로 클리어
+                tempreg &= ~((uint32_t)(0xF << (pinpos * 4)));
+ 800069e:	697b      	ldr	r3, [r7, #20]
+ 80006a0:	009b      	lsls	r3, r3, #2
+ 80006a2:	220f      	movs	r2, #15
+ 80006a4:	fa02 f303 	lsl.w	r3, r2, r3
+ 80006a8:	43db      	mvns	r3, r3
+ 80006aa:	68fa      	ldr	r2, [r7, #12]
+ 80006ac:	4013      	ands	r3, r2
+ 80006ae:	60fb      	str	r3, [r7, #12]
+                // 새로운 설정 값(pin_config)을 해당 핀 위치에 설정
+                tempreg |= (pin_config << (pinpos * 4));
+ 80006b0:	697b      	ldr	r3, [r7, #20]
+ 80006b2:	009b      	lsls	r3, r3, #2
+ 80006b4:	68ba      	ldr	r2, [r7, #8]
+ 80006b6:	fa02 f303 	lsl.w	r3, r2, r3
+ 80006ba:	68fa      	ldr	r2, [r7, #12]
+ 80006bc:	4313      	orrs	r3, r2
+ 80006be:	60fb      	str	r3, [r7, #12]
+                GPIOx->CRL = tempreg; // 레지스터에 최종 값 쓰기
+ 80006c0:	687b      	ldr	r3, [r7, #4]
+ 80006c2:	68fa      	ldr	r2, [r7, #12]
+ 80006c4:	601a      	str	r2, [r3, #0]
+ 80006c6:	e018      	b.n	80006fa <init_gpio+0x112>
+            } else { // Pin 8-15: CRH (Control Register High)
+                tempreg = GPIOx->CRH;
+ 80006c8:	687b      	ldr	r3, [r7, #4]
+ 80006ca:	685b      	ldr	r3, [r3, #4]
+ 80006cc:	60fb      	str	r3, [r7, #12]
+                // 해당 핀의 4비트 영역을 0으로 클리어 (CRH는 핀 8부터 시작하므로 pinpos-8)
+                tempreg &= ~((uint32_t)(0xF << ((pinpos - 8) * 4)));
+ 80006ce:	697b      	ldr	r3, [r7, #20]
+ 80006d0:	3b08      	subs	r3, #8
+ 80006d2:	009b      	lsls	r3, r3, #2
+ 80006d4:	220f      	movs	r2, #15
+ 80006d6:	fa02 f303 	lsl.w	r3, r2, r3
+ 80006da:	43db      	mvns	r3, r3
+ 80006dc:	68fa      	ldr	r2, [r7, #12]
+ 80006de:	4013      	ands	r3, r2
+ 80006e0:	60fb      	str	r3, [r7, #12]
+                // 새로운 설정 값을 해당 핀 위치에 설정
+                tempreg |= (pin_config << ((pinpos - 8) * 4));
+ 80006e2:	697b      	ldr	r3, [r7, #20]
+ 80006e4:	3b08      	subs	r3, #8
+ 80006e6:	009b      	lsls	r3, r3, #2
+ 80006e8:	68ba      	ldr	r2, [r7, #8]
+ 80006ea:	fa02 f303 	lsl.w	r3, r2, r3
+ 80006ee:	68fa      	ldr	r2, [r7, #12]
+ 80006f0:	4313      	orrs	r3, r2
+ 80006f2:	60fb      	str	r3, [r7, #12]
+                GPIOx->CRH = tempreg; // 레지스터에 최종 값 쓰기
+ 80006f4:	687b      	ldr	r3, [r7, #4]
+ 80006f6:	68fa      	ldr	r2, [r7, #12]
+ 80006f8:	605a      	str	r2, [r3, #4]
+    for (pinpos = 0x00; pinpos < 0x10; pinpos++) {
+ 80006fa:	697b      	ldr	r3, [r7, #20]
+ 80006fc:	3301      	adds	r3, #1
+ 80006fe:	617b      	str	r3, [r7, #20]
+ 8000700:	697b      	ldr	r3, [r7, #20]
+ 8000702:	2b0f      	cmp	r3, #15
+ 8000704:	d9b3      	bls.n	800066e <init_gpio+0x86>
+            }
+        }
+    }
+}
+ 8000706:	bf00      	nop
+ 8000708:	bf00      	nop
+ 800070a:	371c      	adds	r7, #28
+ 800070c:	46bd      	mov	sp, r7
+ 800070e:	bc80      	pop	{r7}
+ 8000710:	4770      	bx	lr
+ 8000712:	bf00      	nop
+ 8000714:	40010800 	.word	0x40010800
+ 8000718:	40021000 	.word	0x40021000
+ 800071c:	40010c00 	.word	0x40010c00
+ 8000720:	40011000 	.word	0x40011000
+ 8000724:	40011400 	.word	0x40011400
+
+08000728 <GPIO_WritePin>:
+  * @param  GPIOx: 제어할 GPIO 포트
+  * @param  GPIO_Pin: 설정할 핀의 비트 마스크
+  * @param  PinState: 설정할 핀 상태 (GPIO_PIN_RESET=LOW, GPIO_PIN_SET=HIGH)
+  * @retval 없음
+  */
+void GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, uint8_t PinState) {
+ 8000728:	b480      	push	{r7}
+ 800072a:	b083      	sub	sp, #12
+ 800072c:	af00      	add	r7, sp, #0
+ 800072e:	6078      	str	r0, [r7, #4]
+ 8000730:	460b      	mov	r3, r1
+ 8000732:	807b      	strh	r3, [r7, #2]
+ 8000734:	4613      	mov	r3, r2
+ 8000736:	707b      	strb	r3, [r7, #1]
+    if (PinState != GPIO_PIN_RESET) {
+ 8000738:	787b      	ldrb	r3, [r7, #1]
+ 800073a:	2b00      	cmp	r3, #0
+ 800073c:	d003      	beq.n	8000746 <GPIO_WritePin+0x1e>
+        GPIOx->BSRR = GPIO_Pin; // BSRR (Bit Set/Reset Register)를 사용하여 핀을 HIGH로 설정
+ 800073e:	887a      	ldrh	r2, [r7, #2]
+ 8000740:	687b      	ldr	r3, [r7, #4]
+ 8000742:	611a      	str	r2, [r3, #16]
+    } else {
+        GPIOx->BRR = GPIO_Pin;  // BRR (Bit Reset Register)를 사용하여 핀을 LOW로 설정
+    }
+}
+ 8000744:	e002      	b.n	800074c <GPIO_WritePin+0x24>
+        GPIOx->BRR = GPIO_Pin;  // BRR (Bit Reset Register)를 사용하여 핀을 LOW로 설정
+ 8000746:	887a      	ldrh	r2, [r7, #2]
+ 8000748:	687b      	ldr	r3, [r7, #4]
+ 800074a:	615a      	str	r2, [r3, #20]
+}
+ 800074c:	bf00      	nop
+ 800074e:	370c      	adds	r7, #12
+ 8000750:	46bd      	mov	sp, r7
+ 8000752:	bc80      	pop	{r7}
+ 8000754:	4770      	bx	lr
+	...
+
+08000758 <__NVIC_SetPriority>:
+  \param [in]      IRQn  Interrupt number.
+  \param [in]  priority  Priority to set.
+  \note    The priority cannot be set for every processor exception.
+ */
+__STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
+{
+ 8000758:	b480      	push	{r7}
+ 800075a:	b083      	sub	sp, #12
+ 800075c:	af00      	add	r7, sp, #0
+ 800075e:	4603      	mov	r3, r0
+ 8000760:	6039      	str	r1, [r7, #0]
+ 8000762:	71fb      	strb	r3, [r7, #7]
+  if ((int32_t)(IRQn) >= 0)
+ 8000764:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000768:	2b00      	cmp	r3, #0
+ 800076a:	db0a      	blt.n	8000782 <__NVIC_SetPriority+0x2a>
+  {
+    NVIC->IP[((uint32_t)IRQn)]               = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+ 800076c:	683b      	ldr	r3, [r7, #0]
+ 800076e:	b2da      	uxtb	r2, r3
+ 8000770:	490c      	ldr	r1, [pc, #48]	@ (80007a4 <__NVIC_SetPriority+0x4c>)
+ 8000772:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000776:	0112      	lsls	r2, r2, #4
+ 8000778:	b2d2      	uxtb	r2, r2
+ 800077a:	440b      	add	r3, r1
+ 800077c:	f883 2300 	strb.w	r2, [r3, #768]	@ 0x300
+  }
+  else
+  {
+    SCB->SHP[(((uint32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+  }
+}
+ 8000780:	e00a      	b.n	8000798 <__NVIC_SetPriority+0x40>
+    SCB->SHP[(((uint32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+ 8000782:	683b      	ldr	r3, [r7, #0]
+ 8000784:	b2da      	uxtb	r2, r3
+ 8000786:	4908      	ldr	r1, [pc, #32]	@ (80007a8 <__NVIC_SetPriority+0x50>)
+ 8000788:	79fb      	ldrb	r3, [r7, #7]
+ 800078a:	f003 030f 	and.w	r3, r3, #15
+ 800078e:	3b04      	subs	r3, #4
+ 8000790:	0112      	lsls	r2, r2, #4
+ 8000792:	b2d2      	uxtb	r2, r2
+ 8000794:	440b      	add	r3, r1
+ 8000796:	761a      	strb	r2, [r3, #24]
+}
+ 8000798:	bf00      	nop
+ 800079a:	370c      	adds	r7, #12
+ 800079c:	46bd      	mov	sp, r7
+ 800079e:	bc80      	pop	{r7}
+ 80007a0:	4770      	bx	lr
+ 80007a2:	bf00      	nop
+ 80007a4:	e000e100 	.word	0xe000e100
+ 80007a8:	e000ed00 	.word	0xe000ed00
+
+080007ac <SysTick_Config>:
+  \note    When the variable <b>__Vendor_SysTickConfig</b> is set to 1, then the
+           function <b>SysTick_Config</b> is not included. In this case, the file <b><i>device</i>.h</b>
+           must contain a vendor-specific implementation of this function.
+ */
+__STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
+{
+ 80007ac:	b580      	push	{r7, lr}
+ 80007ae:	b082      	sub	sp, #8
+ 80007b0:	af00      	add	r7, sp, #0
+ 80007b2:	6078      	str	r0, [r7, #4]
+  if ((ticks - 1UL) > SysTick_LOAD_RELOAD_Msk)
+ 80007b4:	687b      	ldr	r3, [r7, #4]
+ 80007b6:	3b01      	subs	r3, #1
+ 80007b8:	f1b3 7f80 	cmp.w	r3, #16777216	@ 0x1000000
+ 80007bc:	d301      	bcc.n	80007c2 <SysTick_Config+0x16>
+  {
+    return (1UL);                                                   /* Reload value impossible */
+ 80007be:	2301      	movs	r3, #1
+ 80007c0:	e00f      	b.n	80007e2 <SysTick_Config+0x36>
+  }
+
+  SysTick->LOAD  = (uint32_t)(ticks - 1UL);                         /* set reload register */
+ 80007c2:	4a0a      	ldr	r2, [pc, #40]	@ (80007ec <SysTick_Config+0x40>)
+ 80007c4:	687b      	ldr	r3, [r7, #4]
+ 80007c6:	3b01      	subs	r3, #1
+ 80007c8:	6053      	str	r3, [r2, #4]
+  NVIC_SetPriority (SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL); /* set Priority for Systick Interrupt */
+ 80007ca:	210f      	movs	r1, #15
+ 80007cc:	f04f 30ff 	mov.w	r0, #4294967295	@ 0xffffffff
+ 80007d0:	f7ff ffc2 	bl	8000758 <__NVIC_SetPriority>
+  SysTick->VAL   = 0UL;                                             /* Load the SysTick Counter Value */
+ 80007d4:	4b05      	ldr	r3, [pc, #20]	@ (80007ec <SysTick_Config+0x40>)
+ 80007d6:	2200      	movs	r2, #0
+ 80007d8:	609a      	str	r2, [r3, #8]
+  SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
+ 80007da:	4b04      	ldr	r3, [pc, #16]	@ (80007ec <SysTick_Config+0x40>)
+ 80007dc:	2207      	movs	r2, #7
+ 80007de:	601a      	str	r2, [r3, #0]
+                   SysTick_CTRL_TICKINT_Msk   |
+                   SysTick_CTRL_ENABLE_Msk;                         /* Enable SysTick IRQ and SysTick Timer */
+  return (0UL);                                                     /* Function successful */
+ 80007e0:	2300      	movs	r3, #0
+}
+ 80007e2:	4618      	mov	r0, r3
+ 80007e4:	3708      	adds	r7, #8
+ 80007e6:	46bd      	mov	sp, r7
+ 80007e8:	bd80      	pop	{r7, pc}
+ 80007ea:	bf00      	nop
+ 80007ec:	e000e010 	.word	0xe000e010
+
+080007f0 <SysTick_Handler>:
+// ==== SysTick 기반 정확한 Delay 함수 구현 ===============================
+// ====================================================================
+volatile uint32_t ms_tick_count = 0; // 1ms 단위로 카운트하는 변수
+
+// SysTick 인터럽트 핸들러 (vector table에 등록되어 자동으로 호출됨)
+void SysTick_Handler(void) {
+ 80007f0:	b480      	push	{r7}
+ 80007f2:	af00      	add	r7, sp, #0
+    if (ms_tick_count > 0) {
+ 80007f4:	4b06      	ldr	r3, [pc, #24]	@ (8000810 <SysTick_Handler+0x20>)
+ 80007f6:	681b      	ldr	r3, [r3, #0]
+ 80007f8:	2b00      	cmp	r3, #0
+ 80007fa:	d004      	beq.n	8000806 <SysTick_Handler+0x16>
+        ms_tick_count--; // ms_tick_count가 0이 될 때까지 1ms마다 감소
+ 80007fc:	4b04      	ldr	r3, [pc, #16]	@ (8000810 <SysTick_Handler+0x20>)
+ 80007fe:	681b      	ldr	r3, [r3, #0]
+ 8000800:	3b01      	subs	r3, #1
+ 8000802:	4a03      	ldr	r2, [pc, #12]	@ (8000810 <SysTick_Handler+0x20>)
+ 8000804:	6013      	str	r3, [r2, #0]
+    }
+}
+ 8000806:	bf00      	nop
+ 8000808:	46bd      	mov	sp, r7
+ 800080a:	bc80      	pop	{r7}
+ 800080c:	4770      	bx	lr
+ 800080e:	bf00      	nop
+ 8000810:	2000001c 	.word	0x2000001c
+
+08000814 <delay_ms>:
+
+// ms 단위로 지연하는 함수
+void delay_ms(uint32_t ms) {
+ 8000814:	b480      	push	{r7}
+ 8000816:	b083      	sub	sp, #12
+ 8000818:	af00      	add	r7, sp, #0
+ 800081a:	6078      	str	r0, [r7, #4]
+    ms_tick_count = ms;     // 지연할 시간(ms) 설정
+ 800081c:	4a06      	ldr	r2, [pc, #24]	@ (8000838 <delay_ms+0x24>)
+ 800081e:	687b      	ldr	r3, [r7, #4]
+ 8000820:	6013      	str	r3, [r2, #0]
+    while (ms_tick_count > 0); // ms_tick_count가 0이 될 때까지 대기
+ 8000822:	bf00      	nop
+ 8000824:	4b04      	ldr	r3, [pc, #16]	@ (8000838 <delay_ms+0x24>)
+ 8000826:	681b      	ldr	r3, [r3, #0]
+ 8000828:	2b00      	cmp	r3, #0
+ 800082a:	d1fb      	bne.n	8000824 <delay_ms+0x10>
+}
+ 800082c:	bf00      	nop
+ 800082e:	bf00      	nop
+ 8000830:	370c      	adds	r7, #12
+ 8000832:	46bd      	mov	sp, r7
+ 8000834:	bc80      	pop	{r7}
+ 8000836:	4770      	bx	lr
+ 8000838:	2000001c 	.word	0x2000001c
+
+0800083c <RCC_init>:
+  * @brief  RCC(Reset and Clock Control) 초기화 함수
+  *         HSI(내부 8MHz RC 발진기)를 PLL 소스로 사용, 64MHz SYSCLK 설정.
+  *         Flash Latency 및 AHB/APB 버스 분주율 설정.
+  * @retval 없음
+  */
+void RCC_init(void) {
+ 800083c:	b480      	push	{r7}
+ 800083e:	af00      	add	r7, sp, #0
+    // 1. HSI 클럭 활성화 (내부 고속 RC 발진기 8MHz)
+    RCC->CR |= RCC_CR_HSION;            // HSION 비트를 1로 설정하여 HSI 활성화
+ 8000840:	4b36      	ldr	r3, [pc, #216]	@ (800091c <RCC_init+0xe0>)
+ 8000842:	681b      	ldr	r3, [r3, #0]
+ 8000844:	4a35      	ldr	r2, [pc, #212]	@ (800091c <RCC_init+0xe0>)
+ 8000846:	f043 0301 	orr.w	r3, r3, #1
+ 800084a:	6013      	str	r3, [r2, #0]
+    while (!(RCC->CR & RCC_CR_HSIRDY)); // HSIRDY 비트가 1이 될 때까지 대기 (HSI 준비 확인)
+ 800084c:	bf00      	nop
+ 800084e:	4b33      	ldr	r3, [pc, #204]	@ (800091c <RCC_init+0xe0>)
+ 8000850:	681b      	ldr	r3, [r3, #0]
+ 8000852:	f003 0302 	and.w	r3, r3, #2
+ 8000856:	2b00      	cmp	r3, #0
+ 8000858:	d0f9      	beq.n	800084e <RCC_init+0x12>
+
+    // 2. FLASH ACR (Access Control Register) 설정: Flash Latency
+    // 64MHz @ 3.3V 환경에서는 2 wait state (3 CPU cycles)가 필요
+    FLASH->ACR |= FLASH_ACR_PRFTBE;     // Prefetch Buffer Enable
+ 800085a:	4b31      	ldr	r3, [pc, #196]	@ (8000920 <RCC_init+0xe4>)
+ 800085c:	681b      	ldr	r3, [r3, #0]
+ 800085e:	4a30      	ldr	r2, [pc, #192]	@ (8000920 <RCC_init+0xe4>)
+ 8000860:	f043 0310 	orr.w	r3, r3, #16
+ 8000864:	6013      	str	r3, [r2, #0]
+    FLASH->ACR &= ~FLASH_ACR_LATENCY;   // 기존 Latency 설정 클리어
+ 8000866:	4b2e      	ldr	r3, [pc, #184]	@ (8000920 <RCC_init+0xe4>)
+ 8000868:	681b      	ldr	r3, [r3, #0]
+ 800086a:	4a2d      	ldr	r2, [pc, #180]	@ (8000920 <RCC_init+0xe4>)
+ 800086c:	f023 0307 	bic.w	r3, r3, #7
+ 8000870:	6013      	str	r3, [r2, #0]
+    FLASH->ACR |= FLASH_ACR_LATENCY_1;  // 2 wait states 설정 (48MHz < SYSCLK <= 72MHz)
+ 8000872:	4b2b      	ldr	r3, [pc, #172]	@ (8000920 <RCC_init+0xe4>)
+ 8000874:	681b      	ldr	r3, [r3, #0]
+ 8000876:	4a2a      	ldr	r2, [pc, #168]	@ (8000920 <RCC_init+0xe4>)
+ 8000878:	f043 0302 	orr.w	r3, r3, #2
+ 800087c:	6013      	str	r3, [r2, #0]
+
+    // 3. AHB (HCLK) Prescaler 설정: SYSCLK 분주 없음 (HCLK = SYSCLK)
+    RCC->CFGR &= ~RCC_CFGR_HPRE;        // HPRE[3:0] 비트를 0으로 클리어 (SYSCLK / 1)
+ 800087e:	4b27      	ldr	r3, [pc, #156]	@ (800091c <RCC_init+0xe0>)
+ 8000880:	685b      	ldr	r3, [r3, #4]
+ 8000882:	4a26      	ldr	r2, [pc, #152]	@ (800091c <RCC_init+0xe0>)
+ 8000884:	f023 03f0 	bic.w	r3, r3, #240	@ 0xf0
+ 8000888:	6053      	str	r3, [r2, #4]
+
+    // 4. APB2 (PCLK2) Prescaler 설정: HCLK 분주 없음 (PCLK2 = HCLK = SYSCLK)
+    // APB2 버스(SPI1 등이 연결됨)는 최대 72MHz를 지원, 현재 HCLK가 64MHz이므로 분주 없음.
+    RCC->CFGR &= ~RCC_CFGR_PPRE2;       // PPRE2[2:0] 비트를 0으로 클리어 (HCLK / 1)
+ 800088a:	4b24      	ldr	r3, [pc, #144]	@ (800091c <RCC_init+0xe0>)
+ 800088c:	685b      	ldr	r3, [r3, #4]
+ 800088e:	4a23      	ldr	r2, [pc, #140]	@ (800091c <RCC_init+0xe0>)
+ 8000890:	f423 5360 	bic.w	r3, r3, #14336	@ 0x3800
+ 8000894:	6053      	str	r3, [r2, #4]
+
+    // 5. APB1 (PCLK1) Prescaler 설정: HCLK / 2 (PCLK1 = HCLK / 2)
+    // APB1 버스(UART2, UART3 등이 연결됨)는 최대 36MHz를 지원, HCLK 64MHz -> PCLK1은 32MHz로 설정.
+    RCC->CFGR &= ~RCC_CFGR_PPRE1;       // PPRE1[2:0] 비트를 0으로 클리어
+ 8000896:	4b21      	ldr	r3, [pc, #132]	@ (800091c <RCC_init+0xe0>)
+ 8000898:	685b      	ldr	r3, [r3, #4]
+ 800089a:	4a20      	ldr	r2, [pc, #128]	@ (800091c <RCC_init+0xe0>)
+ 800089c:	f423 63e0 	bic.w	r3, r3, #1792	@ 0x700
+ 80008a0:	6053      	str	r3, [r2, #4]
+    RCC->CFGR |= RCC_CFGR_PPRE1_DIV2;   // HCLK / 2 설정
+ 80008a2:	4b1e      	ldr	r3, [pc, #120]	@ (800091c <RCC_init+0xe0>)
+ 80008a4:	685b      	ldr	r3, [r3, #4]
+ 80008a6:	4a1d      	ldr	r2, [pc, #116]	@ (800091c <RCC_init+0xe0>)
+ 80008a8:	f443 6380 	orr.w	r3, r3, #1024	@ 0x400
+ 80008ac:	6053      	str	r3, [r2, #4]
+
+    // 6. PLL (Phase-Locked Loop) 설정
+    // PLL 클럭 소스: HSI / 2 (4MHz)
+    RCC->CFGR &= ~RCC_CFGR_PLLSRC;      // PLLSRC 비트를 0으로 클리어 (HSI/2 선택)
+ 80008ae:	4b1b      	ldr	r3, [pc, #108]	@ (800091c <RCC_init+0xe0>)
+ 80008b0:	685b      	ldr	r3, [r3, #4]
+ 80008b2:	4a1a      	ldr	r2, [pc, #104]	@ (800091c <RCC_init+0xe0>)
+ 80008b4:	f423 3380 	bic.w	r3, r3, #65536	@ 0x10000
+ 80008b8:	6053      	str	r3, [r2, #4]
+    // PLL 배율: x16 (4MHz * 16 = 64MHz)
+    RCC->CFGR &= ~RCC_CFGR_PLLMULL;     // 기존 PLLMULL 비트 클리어
+ 80008ba:	4b18      	ldr	r3, [pc, #96]	@ (800091c <RCC_init+0xe0>)
+ 80008bc:	685b      	ldr	r3, [r3, #4]
+ 80008be:	4a17      	ldr	r2, [pc, #92]	@ (800091c <RCC_init+0xe0>)
+ 80008c0:	f423 1370 	bic.w	r3, r3, #3932160	@ 0x3c0000
+ 80008c4:	6053      	str	r3, [r2, #4]
+    RCC->CFGR |= RCC_CFGR_PLLMULL16;    // PLL 배율 x16 설정 (민섭이의 정확한 지적 덕분에 수정!)
+ 80008c6:	4b15      	ldr	r3, [pc, #84]	@ (800091c <RCC_init+0xe0>)
+ 80008c8:	685b      	ldr	r3, [r3, #4]
+ 80008ca:	4a14      	ldr	r2, [pc, #80]	@ (800091c <RCC_init+0xe0>)
+ 80008cc:	f443 1360 	orr.w	r3, r3, #3670016	@ 0x380000
+ 80008d0:	6053      	str	r3, [r2, #4]
+
+    // 7. PLL 활성화
+    RCC->CR |= RCC_CR_PLLON;            // PLLON 비트를 1로 설정하여 PLL 활성화
+ 80008d2:	4b12      	ldr	r3, [pc, #72]	@ (800091c <RCC_init+0xe0>)
+ 80008d4:	681b      	ldr	r3, [r3, #0]
+ 80008d6:	4a11      	ldr	r2, [pc, #68]	@ (800091c <RCC_init+0xe0>)
+ 80008d8:	f043 7380 	orr.w	r3, r3, #16777216	@ 0x1000000
+ 80008dc:	6013      	str	r3, [r2, #0]
+    while (!(RCC->CR & RCC_CR_PLLRDY)); // PLLRDY 비트가 1이 될 때까지 대기 (PLL 준비 확인)
+ 80008de:	bf00      	nop
+ 80008e0:	4b0e      	ldr	r3, [pc, #56]	@ (800091c <RCC_init+0xe0>)
+ 80008e2:	681b      	ldr	r3, [r3, #0]
+ 80008e4:	f003 7300 	and.w	r3, r3, #33554432	@ 0x2000000
+ 80008e8:	2b00      	cmp	r3, #0
+ 80008ea:	d0f9      	beq.n	80008e0 <RCC_init+0xa4>
+
+    // 8. SYSCLK (System Clock) 소스 선택: PLL
+    RCC->CFGR &= ~RCC_CFGR_SW;          // SW[1:0] 비트 클리어
+ 80008ec:	4b0b      	ldr	r3, [pc, #44]	@ (800091c <RCC_init+0xe0>)
+ 80008ee:	685b      	ldr	r3, [r3, #4]
+ 80008f0:	4a0a      	ldr	r2, [pc, #40]	@ (800091c <RCC_init+0xe0>)
+ 80008f2:	f023 0303 	bic.w	r3, r3, #3
+ 80008f6:	6053      	str	r3, [r2, #4]
+    RCC->CFGR |= RCC_CFGR_SW_PLL;       // SYSCLK 소스를 PLL로 선택
+ 80008f8:	4b08      	ldr	r3, [pc, #32]	@ (800091c <RCC_init+0xe0>)
+ 80008fa:	685b      	ldr	r3, [r3, #4]
+ 80008fc:	4a07      	ldr	r2, [pc, #28]	@ (800091c <RCC_init+0xe0>)
+ 80008fe:	f043 0302 	orr.w	r3, r3, #2
+ 8000902:	6053      	str	r3, [r2, #4]
+    while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL); // SYSCLK가 PLL로 전환될 때까지 대기
+ 8000904:	bf00      	nop
+ 8000906:	4b05      	ldr	r3, [pc, #20]	@ (800091c <RCC_init+0xe0>)
+ 8000908:	685b      	ldr	r3, [r3, #4]
+ 800090a:	f003 030c 	and.w	r3, r3, #12
+ 800090e:	2b08      	cmp	r3, #8
+ 8000910:	d1f9      	bne.n	8000906 <RCC_init+0xca>
+
+}
+ 8000912:	bf00      	nop
+ 8000914:	bf00      	nop
+ 8000916:	46bd      	mov	sp, r7
+ 8000918:	bc80      	pop	{r7}
+ 800091a:	4770      	bx	lr
+ 800091c:	40021000 	.word	0x40021000
+ 8000920:	40022000 	.word	0x40022000
+
+08000924 <ili9341_draw_char_custom>:
+
+#define FONT_CHAR_WIDTH  5 // 폰트 자체의 가로 픽셀 수 (주석 상 5)
+#define FONT_CHAR_HEIGHT 5 // 폰트 자체의 세로 픽셀 수 (주석 상 5)
+#define FONT_COL_BYTES   6 // 폰트 데이터에서 한 문자가 차지하는 바이트 수
+
+void ili9341_draw_char_custom(char c, uint16_t x, uint16_t y, uint16_t color, uint16_t bg_color, uint8_t scale) {
+ 8000924:	b590      	push	{r4, r7, lr}
+ 8000926:	b08b      	sub	sp, #44	@ 0x2c
+ 8000928:	af00      	add	r7, sp, #0
+ 800092a:	4604      	mov	r4, r0
+ 800092c:	4608      	mov	r0, r1
+ 800092e:	4611      	mov	r1, r2
+ 8000930:	461a      	mov	r2, r3
+ 8000932:	4623      	mov	r3, r4
+ 8000934:	71fb      	strb	r3, [r7, #7]
+ 8000936:	4603      	mov	r3, r0
+ 8000938:	80bb      	strh	r3, [r7, #4]
+ 800093a:	460b      	mov	r3, r1
+ 800093c:	807b      	strh	r3, [r7, #2]
+ 800093e:	4613      	mov	r3, r2
+ 8000940:	803b      	strh	r3, [r7, #0]
+    if (c < 32 || c > 32 + 95) {
+ 8000942:	79fb      	ldrb	r3, [r7, #7]
+ 8000944:	2b1f      	cmp	r3, #31
+ 8000946:	f240 80a2 	bls.w	8000a8e <ili9341_draw_char_custom+0x16a>
+ 800094a:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 800094e:	2b00      	cmp	r3, #0
+ 8000950:	f2c0 809d 	blt.w	8000a8e <ili9341_draw_char_custom+0x16a>
+        return;
+    }
+
+    int char_index = c - 32;
+ 8000954:	79fb      	ldrb	r3, [r7, #7]
+ 8000956:	3b20      	subs	r3, #32
+ 8000958:	60fb      	str	r3, [r7, #12]
+
+    for (int col = 0; col < FONT_CHAR_WIDTH; col++) {
+ 800095a:	2300      	movs	r3, #0
+ 800095c:	627b      	str	r3, [r7, #36]	@ 0x24
+ 800095e:	e091      	b.n	8000a84 <ili9341_draw_char_custom+0x160>
+        unsigned char column_data = font[char_index][col]; 
+ 8000960:	494d      	ldr	r1, [pc, #308]	@ (8000a98 <ili9341_draw_char_custom+0x174>)
+ 8000962:	68fa      	ldr	r2, [r7, #12]
+ 8000964:	4613      	mov	r3, r2
+ 8000966:	005b      	lsls	r3, r3, #1
+ 8000968:	4413      	add	r3, r2
+ 800096a:	005b      	lsls	r3, r3, #1
+ 800096c:	18ca      	adds	r2, r1, r3
+ 800096e:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 8000970:	4413      	add	r3, r2
+ 8000972:	781b      	ldrb	r3, [r3, #0]
+ 8000974:	72fb      	strb	r3, [r7, #11]
+        
+        for (int row = 0; row < FONT_CHAR_HEIGHT; row++) {
+ 8000976:	2300      	movs	r3, #0
+ 8000978:	623b      	str	r3, [r7, #32]
+ 800097a:	e07c      	b.n	8000a76 <ili9341_draw_char_custom+0x152>
+            // 이 부분이 핵심! (row + FONT_BIT_OFFSET)으로 비트를 정확한 위치에서 읽는다.
+            if ((column_data >> (row + 2)) & 0x01) { 
+ 800097c:	7afa      	ldrb	r2, [r7, #11]
+ 800097e:	6a3b      	ldr	r3, [r7, #32]
+ 8000980:	3302      	adds	r3, #2
+ 8000982:	fa42 f303 	asr.w	r3, r2, r3
+ 8000986:	f003 0301 	and.w	r3, r3, #1
+ 800098a:	2b00      	cmp	r3, #0
+ 800098c:	d038      	beq.n	8000a00 <ili9341_draw_char_custom+0xdc>
+                for (int sx = 0; sx < scale; sx++) {
+ 800098e:	2300      	movs	r3, #0
+ 8000990:	61fb      	str	r3, [r7, #28]
+ 8000992:	e02f      	b.n	80009f4 <ili9341_draw_char_custom+0xd0>
+                    for (int sy = 0; sy < scale; sy++) {
+ 8000994:	2300      	movs	r3, #0
+ 8000996:	61bb      	str	r3, [r7, #24]
+ 8000998:	e024      	b.n	80009e4 <ili9341_draw_char_custom+0xc0>
+                        // ILI9341_DrawPixel 함수는 네가 제공한 함수를 사용!
+                        ILI9341_DrawPixel(x + (col * scale) + sx, y + (row * scale) + sy, color);
+ 800099a:	f897 303c 	ldrb.w	r3, [r7, #60]	@ 0x3c
+ 800099e:	b29b      	uxth	r3, r3
+ 80009a0:	6a7a      	ldr	r2, [r7, #36]	@ 0x24
+ 80009a2:	b292      	uxth	r2, r2
+ 80009a4:	fb02 f303 	mul.w	r3, r2, r3
+ 80009a8:	b29a      	uxth	r2, r3
+ 80009aa:	88bb      	ldrh	r3, [r7, #4]
+ 80009ac:	4413      	add	r3, r2
+ 80009ae:	b29a      	uxth	r2, r3
+ 80009b0:	69fb      	ldr	r3, [r7, #28]
+ 80009b2:	b29b      	uxth	r3, r3
+ 80009b4:	4413      	add	r3, r2
+ 80009b6:	b298      	uxth	r0, r3
+ 80009b8:	f897 303c 	ldrb.w	r3, [r7, #60]	@ 0x3c
+ 80009bc:	b29b      	uxth	r3, r3
+ 80009be:	6a3a      	ldr	r2, [r7, #32]
+ 80009c0:	b292      	uxth	r2, r2
+ 80009c2:	fb02 f303 	mul.w	r3, r2, r3
+ 80009c6:	b29a      	uxth	r2, r3
+ 80009c8:	887b      	ldrh	r3, [r7, #2]
+ 80009ca:	4413      	add	r3, r2
+ 80009cc:	b29a      	uxth	r2, r3
+ 80009ce:	69bb      	ldr	r3, [r7, #24]
+ 80009d0:	b29b      	uxth	r3, r3
+ 80009d2:	4413      	add	r3, r2
+ 80009d4:	b29b      	uxth	r3, r3
+ 80009d6:	883a      	ldrh	r2, [r7, #0]
+ 80009d8:	4619      	mov	r1, r3
+ 80009da:	f7ff fdd9 	bl	8000590 <ILI9341_DrawPixel>
+                    for (int sy = 0; sy < scale; sy++) {
+ 80009de:	69bb      	ldr	r3, [r7, #24]
+ 80009e0:	3301      	adds	r3, #1
+ 80009e2:	61bb      	str	r3, [r7, #24]
+ 80009e4:	f897 303c 	ldrb.w	r3, [r7, #60]	@ 0x3c
+ 80009e8:	69ba      	ldr	r2, [r7, #24]
+ 80009ea:	429a      	cmp	r2, r3
+ 80009ec:	dbd5      	blt.n	800099a <ili9341_draw_char_custom+0x76>
+                for (int sx = 0; sx < scale; sx++) {
+ 80009ee:	69fb      	ldr	r3, [r7, #28]
+ 80009f0:	3301      	adds	r3, #1
+ 80009f2:	61fb      	str	r3, [r7, #28]
+ 80009f4:	f897 303c 	ldrb.w	r3, [r7, #60]	@ 0x3c
+ 80009f8:	69fa      	ldr	r2, [r7, #28]
+ 80009fa:	429a      	cmp	r2, r3
+ 80009fc:	dbca      	blt.n	8000994 <ili9341_draw_char_custom+0x70>
+ 80009fe:	e037      	b.n	8000a70 <ili9341_draw_char_custom+0x14c>
+                    }
+                }
+            } else {
+                for (int sx = 0; sx < scale; sx++) {
+ 8000a00:	2300      	movs	r3, #0
+ 8000a02:	617b      	str	r3, [r7, #20]
+ 8000a04:	e02f      	b.n	8000a66 <ili9341_draw_char_custom+0x142>
+                    for (int sy = 0; sy < scale; sy++) {
+ 8000a06:	2300      	movs	r3, #0
+ 8000a08:	613b      	str	r3, [r7, #16]
+ 8000a0a:	e024      	b.n	8000a56 <ili9341_draw_char_custom+0x132>
+                        // ILI9341_DrawPixel 함수는 네가 제공한 함수를 사용!
+                        ILI9341_DrawPixel(x + (col * scale) + sx, y + (row * scale) + sy, bg_color);
+ 8000a0c:	f897 303c 	ldrb.w	r3, [r7, #60]	@ 0x3c
+ 8000a10:	b29b      	uxth	r3, r3
+ 8000a12:	6a7a      	ldr	r2, [r7, #36]	@ 0x24
+ 8000a14:	b292      	uxth	r2, r2
+ 8000a16:	fb02 f303 	mul.w	r3, r2, r3
+ 8000a1a:	b29a      	uxth	r2, r3
+ 8000a1c:	88bb      	ldrh	r3, [r7, #4]
+ 8000a1e:	4413      	add	r3, r2
+ 8000a20:	b29a      	uxth	r2, r3
+ 8000a22:	697b      	ldr	r3, [r7, #20]
+ 8000a24:	b29b      	uxth	r3, r3
+ 8000a26:	4413      	add	r3, r2
+ 8000a28:	b298      	uxth	r0, r3
+ 8000a2a:	f897 303c 	ldrb.w	r3, [r7, #60]	@ 0x3c
+ 8000a2e:	b29b      	uxth	r3, r3
+ 8000a30:	6a3a      	ldr	r2, [r7, #32]
+ 8000a32:	b292      	uxth	r2, r2
+ 8000a34:	fb02 f303 	mul.w	r3, r2, r3
+ 8000a38:	b29a      	uxth	r2, r3
+ 8000a3a:	887b      	ldrh	r3, [r7, #2]
+ 8000a3c:	4413      	add	r3, r2
+ 8000a3e:	b29a      	uxth	r2, r3
+ 8000a40:	693b      	ldr	r3, [r7, #16]
+ 8000a42:	b29b      	uxth	r3, r3
+ 8000a44:	4413      	add	r3, r2
+ 8000a46:	b29b      	uxth	r3, r3
+ 8000a48:	8f3a      	ldrh	r2, [r7, #56]	@ 0x38
+ 8000a4a:	4619      	mov	r1, r3
+ 8000a4c:	f7ff fda0 	bl	8000590 <ILI9341_DrawPixel>
+                    for (int sy = 0; sy < scale; sy++) {
+ 8000a50:	693b      	ldr	r3, [r7, #16]
+ 8000a52:	3301      	adds	r3, #1
+ 8000a54:	613b      	str	r3, [r7, #16]
+ 8000a56:	f897 303c 	ldrb.w	r3, [r7, #60]	@ 0x3c
+ 8000a5a:	693a      	ldr	r2, [r7, #16]
+ 8000a5c:	429a      	cmp	r2, r3
+ 8000a5e:	dbd5      	blt.n	8000a0c <ili9341_draw_char_custom+0xe8>
+                for (int sx = 0; sx < scale; sx++) {
+ 8000a60:	697b      	ldr	r3, [r7, #20]
+ 8000a62:	3301      	adds	r3, #1
+ 8000a64:	617b      	str	r3, [r7, #20]
+ 8000a66:	f897 303c 	ldrb.w	r3, [r7, #60]	@ 0x3c
+ 8000a6a:	697a      	ldr	r2, [r7, #20]
+ 8000a6c:	429a      	cmp	r2, r3
+ 8000a6e:	dbca      	blt.n	8000a06 <ili9341_draw_char_custom+0xe2>
+        for (int row = 0; row < FONT_CHAR_HEIGHT; row++) {
+ 8000a70:	6a3b      	ldr	r3, [r7, #32]
+ 8000a72:	3301      	adds	r3, #1
+ 8000a74:	623b      	str	r3, [r7, #32]
+ 8000a76:	6a3b      	ldr	r3, [r7, #32]
+ 8000a78:	2b04      	cmp	r3, #4
+ 8000a7a:	f77f af7f 	ble.w	800097c <ili9341_draw_char_custom+0x58>
+    for (int col = 0; col < FONT_CHAR_WIDTH; col++) {
+ 8000a7e:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 8000a80:	3301      	adds	r3, #1
+ 8000a82:	627b      	str	r3, [r7, #36]	@ 0x24
+ 8000a84:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 8000a86:	2b04      	cmp	r3, #4
+ 8000a88:	f77f af6a 	ble.w	8000960 <ili9341_draw_char_custom+0x3c>
+ 8000a8c:	e000      	b.n	8000a90 <ili9341_draw_char_custom+0x16c>
+        return;
+ 8000a8e:	bf00      	nop
+                    }
+                }
+            }
+        }
+    }
+}
+ 8000a90:	372c      	adds	r7, #44	@ 0x2c
+ 8000a92:	46bd      	mov	sp, r7
+ 8000a94:	bd90      	pop	{r4, r7, pc}
+ 8000a96:	bf00      	nop
+ 8000a98:	0800109c 	.word	0x0800109c
+
+08000a9c <ili9341_draw_string_custom>:
+
+// --- 8. 문자열 그리기 함수 (폰트 너비, 높이, 스케일 고려하여 조정) ---
+void ili9341_draw_string_custom(const char* str, uint16_t x, uint16_t y, uint16_t color, uint16_t bg_color, uint8_t scale) {
+ 8000a9c:	b590      	push	{r4, r7, lr}
+ 8000a9e:	b08b      	sub	sp, #44	@ 0x2c
+ 8000aa0:	af02      	add	r7, sp, #8
+ 8000aa2:	60f8      	str	r0, [r7, #12]
+ 8000aa4:	4608      	mov	r0, r1
+ 8000aa6:	4611      	mov	r1, r2
+ 8000aa8:	461a      	mov	r2, r3
+ 8000aaa:	4603      	mov	r3, r0
+ 8000aac:	817b      	strh	r3, [r7, #10]
+ 8000aae:	460b      	mov	r3, r1
+ 8000ab0:	813b      	strh	r3, [r7, #8]
+ 8000ab2:	4613      	mov	r3, r2
+ 8000ab4:	80fb      	strh	r3, [r7, #6]
+    uint16_t current_x = x;
+ 8000ab6:	897b      	ldrh	r3, [r7, #10]
+ 8000ab8:	83fb      	strh	r3, [r7, #30]
+    
+    // 확대된 글자 하나의 너비 (폰트 너비 * 스케일) + 글자 간 여백 (스케일 값만큼 줄 수도 있고, 고정 값 줄 수도 있음)
+    // 여기서는 FONT_CHAR_WIDTH * scale + 1 픽셀 여백을 줘볼게.
+    const int char_rendered_width = (FONT_CHAR_WIDTH * scale) + 1; 
+ 8000aba:	f897 2034 	ldrb.w	r2, [r7, #52]	@ 0x34
+ 8000abe:	4613      	mov	r3, r2
+ 8000ac0:	009b      	lsls	r3, r3, #2
+ 8000ac2:	4413      	add	r3, r2
+ 8000ac4:	3301      	adds	r3, #1
+ 8000ac6:	61bb      	str	r3, [r7, #24]
+    const int char_rendered_height = (FONT_CHAR_HEIGHT * scale) + 2; // 폰트 높이 * 스케일 + 줄 간 여백
+ 8000ac8:	f897 2034 	ldrb.w	r2, [r7, #52]	@ 0x34
+ 8000acc:	4613      	mov	r3, r2
+ 8000ace:	009b      	lsls	r3, r3, #2
+ 8000ad0:	4413      	add	r3, r2
+ 8000ad2:	3302      	adds	r3, #2
+ 8000ad4:	617b      	str	r3, [r7, #20]
+
+    while (*str) {
+ 8000ad6:	e024      	b.n	8000b22 <ili9341_draw_string_custom+0x86>
+        ili9341_draw_char_custom(*str, current_x, y, color, bg_color, scale);
+ 8000ad8:	68fb      	ldr	r3, [r7, #12]
+ 8000ada:	7818      	ldrb	r0, [r3, #0]
+ 8000adc:	88fc      	ldrh	r4, [r7, #6]
+ 8000ade:	893a      	ldrh	r2, [r7, #8]
+ 8000ae0:	8bf9      	ldrh	r1, [r7, #30]
+ 8000ae2:	f897 3034 	ldrb.w	r3, [r7, #52]	@ 0x34
+ 8000ae6:	9301      	str	r3, [sp, #4]
+ 8000ae8:	8e3b      	ldrh	r3, [r7, #48]	@ 0x30
+ 8000aea:	9300      	str	r3, [sp, #0]
+ 8000aec:	4623      	mov	r3, r4
+ 8000aee:	f7ff ff19 	bl	8000924 <ili9341_draw_char_custom>
+        current_x += char_rendered_width; // 다음 문자의 X 좌표
+ 8000af2:	69bb      	ldr	r3, [r7, #24]
+ 8000af4:	b29a      	uxth	r2, r3
+ 8000af6:	8bfb      	ldrh	r3, [r7, #30]
+ 8000af8:	4413      	add	r3, r2
+ 8000afa:	83fb      	strh	r3, [r7, #30]
+
+        // 화면 너비 초과 시 줄 바꿈
+        // ILI9341의 최대 너비는 320 픽셀이야.
+        if (current_x + char_rendered_width >= 320) {
+ 8000afc:	8bfa      	ldrh	r2, [r7, #30]
+ 8000afe:	69bb      	ldr	r3, [r7, #24]
+ 8000b00:	4413      	add	r3, r2
+ 8000b02:	f5b3 7fa0 	cmp.w	r3, #320	@ 0x140
+ 8000b06:	db09      	blt.n	8000b1c <ili9341_draw_string_custom+0x80>
+            current_x = x; // 시작 X 위치로 리셋
+ 8000b08:	897b      	ldrh	r3, [r7, #10]
+ 8000b0a:	83fb      	strh	r3, [r7, #30]
+            y += char_rendered_height; // 다음 줄의 Y 좌표
+ 8000b0c:	697b      	ldr	r3, [r7, #20]
+ 8000b0e:	b29a      	uxth	r2, r3
+ 8000b10:	893b      	ldrh	r3, [r7, #8]
+ 8000b12:	4413      	add	r3, r2
+ 8000b14:	813b      	strh	r3, [r7, #8]
+            // 화면 높이 초과 시 중단 (ILI9341 최대 높이는 240 픽셀)
+            if (y >= 240) break; 
+ 8000b16:	893b      	ldrh	r3, [r7, #8]
+ 8000b18:	2bef      	cmp	r3, #239	@ 0xef
+ 8000b1a:	d807      	bhi.n	8000b2c <ili9341_draw_string_custom+0x90>
+        }
+        str++;
+ 8000b1c:	68fb      	ldr	r3, [r7, #12]
+ 8000b1e:	3301      	adds	r3, #1
+ 8000b20:	60fb      	str	r3, [r7, #12]
+    while (*str) {
+ 8000b22:	68fb      	ldr	r3, [r7, #12]
+ 8000b24:	781b      	ldrb	r3, [r3, #0]
+ 8000b26:	2b00      	cmp	r3, #0
+ 8000b28:	d1d6      	bne.n	8000ad8 <ili9341_draw_string_custom+0x3c>
+    }
+}
+ 8000b2a:	e000      	b.n	8000b2e <ili9341_draw_string_custom+0x92>
+            if (y >= 240) break; 
+ 8000b2c:	bf00      	nop
+}
+ 8000b2e:	bf00      	nop
+ 8000b30:	3724      	adds	r7, #36	@ 0x24
+ 8000b32:	46bd      	mov	sp, r7
+ 8000b34:	bd90      	pop	{r4, r7, pc}
+	...
+
+08000b38 <main>:
+
+
+int main(void)
+{
+ 8000b38:	b580      	push	{r7, lr}
+ 8000b3a:	b082      	sub	sp, #8
+ 8000b3c:	af02      	add	r7, sp, #8
+	// 1. 시스템 클럭 초기화 (HSI(8MHz)를 이용한 PLL 구성, 64MHz SYSCLK 설정)
+	RCC_init();
+ 8000b3e:	f7ff fe7d 	bl	800083c <RCC_init>
+
+    // !!! 필수: AFIO (Alternate Function I/O) 모듈 클럭 활성화 !!!
+    // SPI와 UART는 모두 Alternate Function 핀을 사용하므로, AFIO 클럭 활성화는 필수!
+    RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+ 8000b42:	4b3f      	ldr	r3, [pc, #252]	@ (8000c40 <main+0x108>)
+ 8000b44:	699b      	ldr	r3, [r3, #24]
+ 8000b46:	4a3e      	ldr	r2, [pc, #248]	@ (8000c40 <main+0x108>)
+ 8000b48:	f043 0301 	orr.w	r3, r3, #1
+ 8000b4c:	6193      	str	r3, [r2, #24]
+    // GPIOB 클럭 활성화 (ILI9341 제어 핀 PB0, PB1, PB2 때문)
+    RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
+ 8000b4e:	4b3c      	ldr	r3, [pc, #240]	@ (8000c40 <main+0x108>)
+ 8000b50:	699b      	ldr	r3, [r3, #24]
+ 8000b52:	4a3b      	ldr	r2, [pc, #236]	@ (8000c40 <main+0x108>)
+ 8000b54:	f043 0308 	orr.w	r3, r3, #8
+ 8000b58:	6193      	str	r3, [r2, #24]
+
+    // 2. SysTick 타이머 초기화 (정확한 delay_ms() 함수를 위해)
+    // SCoreClock 변수는 RCC_init()에서 64000000으로 업데이트됩니다.
+    SysTick_Config(RCC_SYSTEM_CLCOK / 1000); // 1ms마다 SysTick 인터럽트 발생
+ 8000b5a:	f44f 407a 	mov.w	r0, #64000	@ 0xfa00
+ 8000b5e:	f7ff fe25 	bl	80007ac <SysTick_Config>
+    NVIC_SetPriority(SysTick_IRQn, 15);     // SysTick 인터럽트 우선순위 설정 (가장 낮은 우선순위)
+ 8000b62:	210f      	movs	r1, #15
+ 8000b64:	f04f 30ff 	mov.w	r0, #4294967295	@ 0xffffffff
+ 8000b68:	f7ff fdf6 	bl	8000758 <__NVIC_SetPriority>
+
+    // --- 테스트용 LED 설정 (GPIO 동작 및 MCU Alive 확인용) ---
+    // GPIOC_PIN_13은 대부분의 Discovery/Nucleo 보드에 내장된 LED입니다.
+    init_gpio(GPIOC, GPIO_PIN_13, GPIO_MODE_OUTPUT_2MHZ_VAL, GPIO_CNF_GP_PP_OUT);
+ 8000b6c:	2300      	movs	r3, #0
+ 8000b6e:	2202      	movs	r2, #2
+ 8000b70:	f44f 5100 	mov.w	r1, #8192	@ 0x2000
+ 8000b74:	4833      	ldr	r0, [pc, #204]	@ (8000c44 <main+0x10c>)
+ 8000b76:	f7ff fd37 	bl	80005e8 <init_gpio>
+    // ---------------------------------------------
+
+    // 3. UART2 초기화 (STLink VCP용으로 가정, PA2/PA3 핀 사용, 115200 보드레이트)
+    UART2_init(115200);
+ 8000b7a:	f44f 30e1 	mov.w	r0, #115200	@ 0x1c200
+ 8000b7e:	f000 f92f 	bl	8000de0 <UART2_init>
+  \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+           Can only be executed in Privileged modes.
+ */
+__STATIC_FORCEINLINE void __enable_irq(void)
+{
+  __ASM volatile ("cpsie i" : : : "memory");
+ 8000b82:	b662      	cpsie	i
+}
+ 8000b84:	bf00      	nop
+
+    // 4. 전역 인터럽트 활성화 (SysTick, SPI RX 인터럽트 등 모든 인터럽트 동작에 필수)
+    __enable_irq();
+
+    // 초기 LED 깜빡임으로 MCU 동작 확인 (UART 초기화 전에도 깜빡여서 MCU 살아있음 보여줌)
+    GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET); // LED ON
+ 8000b86:	2200      	movs	r2, #0
+ 8000b88:	f44f 5100 	mov.w	r1, #8192	@ 0x2000
+ 8000b8c:	482d      	ldr	r0, [pc, #180]	@ (8000c44 <main+0x10c>)
+ 8000b8e:	f7ff fdcb 	bl	8000728 <GPIO_WritePin>
+    delay_ms(200);
+ 8000b92:	20c8      	movs	r0, #200	@ 0xc8
+ 8000b94:	f7ff fe3e 	bl	8000814 <delay_ms>
+    GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);   // LED OFF
+ 8000b98:	2201      	movs	r2, #1
+ 8000b9a:	f44f 5100 	mov.w	r1, #8192	@ 0x2000
+ 8000b9e:	4829      	ldr	r0, [pc, #164]	@ (8000c44 <main+0x10c>)
+ 8000ba0:	f7ff fdc2 	bl	8000728 <GPIO_WritePin>
+    delay_ms(200);
+ 8000ba4:	20c8      	movs	r0, #200	@ 0xc8
+ 8000ba6:	f7ff fe35 	bl	8000814 <delay_ms>
+
+    // --- 1단계 테스트: UART "Hello World!" 메시지 출력 확인 ---
+    // 이 메시지가 터미널에 성공적으로 출력되면 UART 통신은 정상 작동하는 것.
+    UART2_transmit_string("\r\n--- STM32F103 VCP Test Start! (via UART2 PA2/PA3) ---\r\n");
+ 8000baa:	4827      	ldr	r0, [pc, #156]	@ (8000c48 <main+0x110>)
+ 8000bac:	f000 f990 	bl	8000ed0 <UART2_transmit_string>
+    UART2_transmit_string("Hello World! UART is working.\r\n");
+ 8000bb0:	4826      	ldr	r0, [pc, #152]	@ (8000c4c <main+0x114>)
+ 8000bb2:	f000 f98d 	bl	8000ed0 <UART2_transmit_string>
+    UART2_transmit_string("Initializing ILI9341 LCD next...\r\n");
+ 8000bb6:	4826      	ldr	r0, [pc, #152]	@ (8000c50 <main+0x118>)
+ 8000bb8:	f000 f98a 	bl	8000ed0 <UART2_transmit_string>
+    delay_ms(1000); // 1초 대기
+ 8000bbc:	f44f 707a 	mov.w	r0, #1000	@ 0x3e8
+ 8000bc0:	f7ff fe28 	bl	8000814 <delay_ms>
+
+    // --- 2단계 테스트: SPI1 및 ILI9341 LCD 초기화 및 테스트 ---
+    ILI9341_init_pins(); // ILI9341 제어 핀 GPIO 초기화
+ 8000bc4:	f7ff fad4 	bl	8000170 <ILI9341_init_pins>
+    SPI1_init();         // SPI1 주변장치 초기화
+ 8000bc8:	f000 f894 	bl	8000cf4 <SPI1_init>
+    
+    // ILI9341 초기화 시퀀스 실행
+    ILI9341_init();
+ 8000bcc:	f7ff fb5a 	bl	8000284 <ILI9341_init>
+    UART2_transmit_string("ILI9341 LCD Initialized. Starting graphics tests.\r\n");
+ 8000bd0:	4820      	ldr	r0, [pc, #128]	@ (8000c54 <main+0x11c>)
+ 8000bd2:	f000 f97d 	bl	8000ed0 <UART2_transmit_string>
+    delay_ms(1000);
+ 8000bd6:	f44f 707a 	mov.w	r0, #1000	@ 0x3e8
+ 8000bda:	f7ff fe1b 	bl	8000814 <delay_ms>
+    ILI9341_FillScreen(RGB565(0, 0, 0)); // 배경을 검은색으로
+ 8000bde:	2000      	movs	r0, #0
+ 8000be0:	f7ff fcab 	bl	800053a <ILI9341_FillScreen>
+
+    // "Hello Cworld" 출력!
+    // 스케일 1 (기본 5x5 폰트)
+    ili9341_draw_string_custom("Hello Cworld!", 10, 10, RGB565(0, 255, 0), RGB565(0, 0, 0), 1); 
+ 8000be4:	2301      	movs	r3, #1
+ 8000be6:	9301      	str	r3, [sp, #4]
+ 8000be8:	2300      	movs	r3, #0
+ 8000bea:	9300      	str	r3, [sp, #0]
+ 8000bec:	f44f 63fc 	mov.w	r3, #2016	@ 0x7e0
+ 8000bf0:	220a      	movs	r2, #10
+ 8000bf2:	210a      	movs	r1, #10
+ 8000bf4:	4818      	ldr	r0, [pc, #96]	@ (8000c58 <main+0x120>)
+ 8000bf6:	f7ff ff51 	bl	8000a9c <ili9341_draw_string_custom>
+
+    // 스케일 2 (10x10 폰트처럼 보임)
+    ili9341_draw_string_custom("Temp : 25.5 C", 10, 30, RGB565(255, 255, 0), RGB565(0, 0, 0), 2); 
+ 8000bfa:	2302      	movs	r3, #2
+ 8000bfc:	9301      	str	r3, [sp, #4]
+ 8000bfe:	2300      	movs	r3, #0
+ 8000c00:	9300      	str	r3, [sp, #0]
+ 8000c02:	f64f 73e0 	movw	r3, #65504	@ 0xffe0
+ 8000c06:	221e      	movs	r2, #30
+ 8000c08:	210a      	movs	r1, #10
+ 8000c0a:	4814      	ldr	r0, [pc, #80]	@ (8000c5c <main+0x124>)
+ 8000c0c:	f7ff ff46 	bl	8000a9c <ili9341_draw_string_custom>
+
+    // 스케일 3 (15x15 폰트처럼 보임)
+    ili9341_draw_string_custom("Humid: 60.2 %", 10, 70, RGB565(0, 255, 255), RGB565(0, 0, 0), 3); 
+ 8000c10:	2303      	movs	r3, #3
+ 8000c12:	9301      	str	r3, [sp, #4]
+ 8000c14:	2300      	movs	r3, #0
+ 8000c16:	9300      	str	r3, [sp, #0]
+ 8000c18:	f240 73ff 	movw	r3, #2047	@ 0x7ff
+ 8000c1c:	2246      	movs	r2, #70	@ 0x46
+ 8000c1e:	210a      	movs	r1, #10
+ 8000c20:	480f      	ldr	r0, [pc, #60]	@ (8000c60 <main+0x128>)
+ 8000c22:	f7ff ff3b 	bl	8000a9c <ili9341_draw_string_custom>
+
+    // 스케일 4 (20x20 폰트처럼 보임)
+    ili9341_draw_string_custom("Test", 10, 130, RGB565(255, 0, 255), RGB565(0, 0, 0), 4);
+ 8000c26:	2304      	movs	r3, #4
+ 8000c28:	9301      	str	r3, [sp, #4]
+ 8000c2a:	2300      	movs	r3, #0
+ 8000c2c:	9300      	str	r3, [sp, #0]
+ 8000c2e:	f64f 031f 	movw	r3, #63519	@ 0xf81f
+ 8000c32:	2282      	movs	r2, #130	@ 0x82
+ 8000c34:	210a      	movs	r1, #10
+ 8000c36:	480b      	ldr	r0, [pc, #44]	@ (8000c64 <main+0x12c>)
+ 8000c38:	f7ff ff30 	bl	8000a9c <ili9341_draw_string_custom>
+
+    while(true) // 무한 루프
+ 8000c3c:	bf00      	nop
+ 8000c3e:	e7fd      	b.n	8000c3c <main+0x104>
+ 8000c40:	40021000 	.word	0x40021000
+ 8000c44:	40011000 	.word	0x40011000
+ 8000c48:	08000fb0 	.word	0x08000fb0
+ 8000c4c:	08000fec 	.word	0x08000fec
+ 8000c50:	0800100c 	.word	0x0800100c
+ 8000c54:	08001030 	.word	0x08001030
+ 8000c58:	08001064 	.word	0x08001064
+ 8000c5c:	08001074 	.word	0x08001074
+ 8000c60:	08001084 	.word	0x08001084
+ 8000c64:	08001094 	.word	0x08001094
+
+08000c68 <__NVIC_EnableIRQ>:
+{
+ 8000c68:	b480      	push	{r7}
+ 8000c6a:	b083      	sub	sp, #12
+ 8000c6c:	af00      	add	r7, sp, #0
+ 8000c6e:	4603      	mov	r3, r0
+ 8000c70:	71fb      	strb	r3, [r7, #7]
+  if ((int32_t)(IRQn) >= 0)
+ 8000c72:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000c76:	2b00      	cmp	r3, #0
+ 8000c78:	db0b      	blt.n	8000c92 <__NVIC_EnableIRQ+0x2a>
+    NVIC->ISER[(((uint32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)IRQn) & 0x1FUL));
+ 8000c7a:	79fb      	ldrb	r3, [r7, #7]
+ 8000c7c:	f003 021f 	and.w	r2, r3, #31
+ 8000c80:	4906      	ldr	r1, [pc, #24]	@ (8000c9c <__NVIC_EnableIRQ+0x34>)
+ 8000c82:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000c86:	095b      	lsrs	r3, r3, #5
+ 8000c88:	2001      	movs	r0, #1
+ 8000c8a:	fa00 f202 	lsl.w	r2, r0, r2
+ 8000c8e:	f841 2023 	str.w	r2, [r1, r3, lsl #2]
+}
+ 8000c92:	bf00      	nop
+ 8000c94:	370c      	adds	r7, #12
+ 8000c96:	46bd      	mov	sp, r7
+ 8000c98:	bc80      	pop	{r7}
+ 8000c9a:	4770      	bx	lr
+ 8000c9c:	e000e100 	.word	0xe000e100
+
+08000ca0 <__NVIC_SetPriority>:
+{
+ 8000ca0:	b480      	push	{r7}
+ 8000ca2:	b083      	sub	sp, #12
+ 8000ca4:	af00      	add	r7, sp, #0
+ 8000ca6:	4603      	mov	r3, r0
+ 8000ca8:	6039      	str	r1, [r7, #0]
+ 8000caa:	71fb      	strb	r3, [r7, #7]
+  if ((int32_t)(IRQn) >= 0)
+ 8000cac:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000cb0:	2b00      	cmp	r3, #0
+ 8000cb2:	db0a      	blt.n	8000cca <__NVIC_SetPriority+0x2a>
+    NVIC->IP[((uint32_t)IRQn)]               = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+ 8000cb4:	683b      	ldr	r3, [r7, #0]
+ 8000cb6:	b2da      	uxtb	r2, r3
+ 8000cb8:	490c      	ldr	r1, [pc, #48]	@ (8000cec <__NVIC_SetPriority+0x4c>)
+ 8000cba:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000cbe:	0112      	lsls	r2, r2, #4
+ 8000cc0:	b2d2      	uxtb	r2, r2
+ 8000cc2:	440b      	add	r3, r1
+ 8000cc4:	f883 2300 	strb.w	r2, [r3, #768]	@ 0x300
+}
+ 8000cc8:	e00a      	b.n	8000ce0 <__NVIC_SetPriority+0x40>
+    SCB->SHP[(((uint32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+ 8000cca:	683b      	ldr	r3, [r7, #0]
+ 8000ccc:	b2da      	uxtb	r2, r3
+ 8000cce:	4908      	ldr	r1, [pc, #32]	@ (8000cf0 <__NVIC_SetPriority+0x50>)
+ 8000cd0:	79fb      	ldrb	r3, [r7, #7]
+ 8000cd2:	f003 030f 	and.w	r3, r3, #15
+ 8000cd6:	3b04      	subs	r3, #4
+ 8000cd8:	0112      	lsls	r2, r2, #4
+ 8000cda:	b2d2      	uxtb	r2, r2
+ 8000cdc:	440b      	add	r3, r1
+ 8000cde:	761a      	strb	r2, [r3, #24]
+}
+ 8000ce0:	bf00      	nop
+ 8000ce2:	370c      	adds	r7, #12
+ 8000ce4:	46bd      	mov	sp, r7
+ 8000ce6:	bc80      	pop	{r7}
+ 8000ce8:	4770      	bx	lr
+ 8000cea:	bf00      	nop
+ 8000cec:	e000e100 	.word	0xe000e100
+ 8000cf0:	e000ed00 	.word	0xe000ed00
+
+08000cf4 <SPI1_init>:
+/**
+  * @brief  SPI1 마스터 모드 초기화 함수
+  *         GPIO 핀 설정, SPI 주변장치 설정, RXNE 인터럽트 활성화 및 NVIC 설정.
+  * @retval 없음
+  */
+void SPI1_init(void) {
+ 8000cf4:	b580      	push	{r7, lr}
+ 8000cf6:	af00      	add	r7, sp, #0
+    // 1. SPI1 주변장치 클럭 활성화 (SPI1은 APB2 버스에 연결됨)
+    RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+ 8000cf8:	4b19      	ldr	r3, [pc, #100]	@ (8000d60 <SPI1_init+0x6c>)
+ 8000cfa:	699b      	ldr	r3, [r3, #24]
+ 8000cfc:	4a18      	ldr	r2, [pc, #96]	@ (8000d60 <SPI1_init+0x6c>)
+ 8000cfe:	f443 5380 	orr.w	r3, r3, #4096	@ 0x1000
+ 8000d02:	6193      	str	r3, [r2, #24]
+
+    // 2. GPIO 핀 설정
+    // SCK (PA5) : 대체 기능 푸시-풀 출력, 50MHz
+    init_gpio(SPI_PORT, SCK_PIN,  GPIO_MODE_OUTPUT_50MHZ_VAL, GPIO_CNF_AF_PP_OUT);
+ 8000d04:	2302      	movs	r3, #2
+ 8000d06:	2203      	movs	r2, #3
+ 8000d08:	2120      	movs	r1, #32
+ 8000d0a:	4816      	ldr	r0, [pc, #88]	@ (8000d64 <SPI1_init+0x70>)
+ 8000d0c:	f7ff fc6c 	bl	80005e8 <init_gpio>
+    // MOSI (PA7) : 대체 기능 푸시-풀 출력, 50MHz
+    init_gpio(SPI_PORT, MOSI_PIN, GPIO_MODE_OUTPUT_50MHZ_VAL, GPIO_CNF_AF_PP_OUT);
+ 8000d10:	2302      	movs	r3, #2
+ 8000d12:	2203      	movs	r2, #3
+ 8000d14:	2180      	movs	r1, #128	@ 0x80
+ 8000d16:	4813      	ldr	r0, [pc, #76]	@ (8000d64 <SPI1_init+0x70>)
+ 8000d18:	f7ff fc66 	bl	80005e8 <init_gpio>
+    // MISO (PA6) : 플로팅 입력 (마스터 모드에서 데이터를 수신하므로 입력으로 설정)
+    init_gpio(SPI_PORT, MISO_PIN, GPIO_MODE_INPUT_VAL,        GPIO_CNF_FLOATING_IN); // MISO는 플로팅 입력으로
+ 8000d1c:	2301      	movs	r3, #1
+ 8000d1e:	2200      	movs	r2, #0
+ 8000d20:	2140      	movs	r1, #64	@ 0x40
+ 8000d22:	4810      	ldr	r0, [pc, #64]	@ (8000d64 <SPI1_init+0x70>)
+ 8000d24:	f7ff fc60 	bl	80005e8 <init_gpio>
+    // 3. SPI1 주변장치 초기화 (CR1, CR2 레지스터)
+    // - Mode 0 (CPOL=0, CPHA=0)으로 설정: 클럭 유휴 상태는 LOW, 첫 번째 클럭 엣지에서 데이터 샘플링
+    // - 마스터 모드 (MSTR 비트 설정)
+    // - 보드레이트 프리스케일러: PCLK2 / 4 (PCLK2=64MHz -> SPI 클럭 16MHz)
+    // - 소프트웨어 슬레이브 관리 (SSM, SSI 비트 설정): CS 핀을 소프트웨어로 제어
+    SPI1->CR1 |= ( (0 << SPI_CR1_CPOL_Pos) |        // CPOL=0
+ 8000d28:	4b0f      	ldr	r3, [pc, #60]	@ (8000d68 <SPI1_init+0x74>)
+ 8000d2a:	681b      	ldr	r3, [r3, #0]
+ 8000d2c:	4a0e      	ldr	r2, [pc, #56]	@ (8000d68 <SPI1_init+0x74>)
+ 8000d2e:	f443 7343 	orr.w	r3, r3, #780	@ 0x30c
+ 8000d32:	6013      	str	r3, [r2, #0]
+                   (1 << SPI_CR1_SSM_Pos)  |        // 소프트웨어 슬레이브 관리 활성화
+                   (1 << SPI_CR1_SSI_Pos) );        // 내부 슬레이브 셀렉트 (마스터 모드에서 SSM 사용 시)
+
+    // CR2 레지스터: RXNE (Receive buffer Not Empty) 인터럽트 활성화
+    // LCD 제어에는 송신만 주로 하지만, ID를 읽거나 하는 경우를 위해 활성화 (디버깅에도 도움)
+    SPI1->CR2 |= SPI_CR2_RXNEIE;
+ 8000d34:	4b0c      	ldr	r3, [pc, #48]	@ (8000d68 <SPI1_init+0x74>)
+ 8000d36:	685b      	ldr	r3, [r3, #4]
+ 8000d38:	4a0b      	ldr	r2, [pc, #44]	@ (8000d68 <SPI1_init+0x74>)
+ 8000d3a:	f043 0340 	orr.w	r3, r3, #64	@ 0x40
+ 8000d3e:	6053      	str	r3, [r2, #4]
+
+    // 4. SPI 주변장치 활성화 (SPE 비트 설정)
+    SPI1->CR1 |= SPI_CR1_SPE;
+ 8000d40:	4b09      	ldr	r3, [pc, #36]	@ (8000d68 <SPI1_init+0x74>)
+ 8000d42:	681b      	ldr	r3, [r3, #0]
+ 8000d44:	4a08      	ldr	r2, [pc, #32]	@ (8000d68 <SPI1_init+0x74>)
+ 8000d46:	f043 0340 	orr.w	r3, r3, #64	@ 0x40
+ 8000d4a:	6013      	str	r3, [r2, #0]
+
+    // 5. NVIC (Nested Vectored Interrupt Controller) 설정
+    NVIC_SetPriority(SPI1_IRQn, 0);     // SPI1 인터럽트 우선순위 설정 (0이 가장 높은 우선순위)
+ 8000d4c:	2100      	movs	r1, #0
+ 8000d4e:	2023      	movs	r0, #35	@ 0x23
+ 8000d50:	f7ff ffa6 	bl	8000ca0 <__NVIC_SetPriority>
+    NVIC_EnableIRQ(SPI1_IRQn);          // SPI1 인터럽트 활성화
+ 8000d54:	2023      	movs	r0, #35	@ 0x23
+ 8000d56:	f7ff ff87 	bl	8000c68 <__NVIC_EnableIRQ>
+}
+ 8000d5a:	bf00      	nop
+ 8000d5c:	bd80      	pop	{r7, pc}
+ 8000d5e:	bf00      	nop
+ 8000d60:	40021000 	.word	0x40021000
+ 8000d64:	40010800 	.word	0x40010800
+ 8000d68:	40013000 	.word	0x40013000
+
+08000d6c <SPI1_transfer>:
+/**
+  * @brief  SPI1을 통해 8비트 데이터를 송수신하는 함수 (블로킹 방식)
+  * @param  data: 전송할 8비트 데이터
+  * @retval 수신된 8비트 데이터
+  */
+uint8_t SPI1_transfer(uint8_t data) {
+ 8000d6c:	b480      	push	{r7}
+ 8000d6e:	b083      	sub	sp, #12
+ 8000d70:	af00      	add	r7, sp, #0
+ 8000d72:	4603      	mov	r3, r0
+ 8000d74:	71fb      	strb	r3, [r7, #7]
+    // 1. TX 버퍼가 비어있을 때까지 대기 (데이터 전송 준비)
+    while (!(SPI1->SR & SPI_SR_TXE));
+ 8000d76:	bf00      	nop
+ 8000d78:	4b07      	ldr	r3, [pc, #28]	@ (8000d98 <SPI1_transfer+0x2c>)
+ 8000d7a:	689b      	ldr	r3, [r3, #8]
+ 8000d7c:	f003 0302 	and.w	r3, r3, #2
+ 8000d80:	2b00      	cmp	r3, #0
+ 8000d82:	d0f9      	beq.n	8000d78 <SPI1_transfer+0xc>
+
+    // 2. DR(데이터 레지스터)에 데이터를 씀으로써 전송 시작
+    SPI1->DR = data;
+ 8000d84:	4a04      	ldr	r2, [pc, #16]	@ (8000d98 <SPI1_transfer+0x2c>)
+ 8000d86:	79fb      	ldrb	r3, [r7, #7]
+ 8000d88:	60d3      	str	r3, [r2, #12]
+    // 3. RX 버퍼에 데이터가 들어올 때까지 대기 (데이터 수신 완료)
+    // while (!(SPI1->SR & SPI_SR_RXNE));
+
+    // 4. DR에서 데이터를 읽어와 반환 (수신된 데이터)
+    // return (uint8_t)SPI1->DR;
+}
+ 8000d8a:	bf00      	nop
+ 8000d8c:	4618      	mov	r0, r3
+ 8000d8e:	370c      	adds	r7, #12
+ 8000d90:	46bd      	mov	sp, r7
+ 8000d92:	bc80      	pop	{r7}
+ 8000d94:	4770      	bx	lr
+ 8000d96:	bf00      	nop
+ 8000d98:	40013000 	.word	0x40013000
+
+08000d9c <SPI1_IRQHandler>:
+
+/**
+  * @brief  SPI1 글로벌 인터럽트 핸들러 (ISR)
+  *         startup_stm32f103xb.s 파일의 벡터 테이블에 정의된 `SPI1_IRQHandler` 이름과 일치해야 함.
+  */
+void SPI1_IRQHandler(void) {
+ 8000d9c:	b480      	push	{r7}
+ 8000d9e:	b085      	sub	sp, #20
+ 8000da0:	af00      	add	r7, sp, #0
+    // RXNE (Receive buffer Not Empty) 플래그가 설정되었는지 확인
+    if (SPI1->SR & SPI_SR_RXNE) {
+ 8000da2:	4b0e      	ldr	r3, [pc, #56]	@ (8000ddc <SPI1_IRQHandler+0x40>)
+ 8000da4:	689b      	ldr	r3, [r3, #8]
+ 8000da6:	f003 0301 	and.w	r3, r3, #1
+ 8000daa:	2b00      	cmp	r3, #0
+ 8000dac:	d003      	beq.n	8000db6 <SPI1_IRQHandler+0x1a>
+        // DR에서 데이터를 읽으면 RXNE 플래그가 자동으로 클리어됨 (필수!)
+        volatile uint8_t received_byte = (uint8_t)SPI1->DR;
+ 8000dae:	4b0b      	ldr	r3, [pc, #44]	@ (8000ddc <SPI1_IRQHandler+0x40>)
+ 8000db0:	68db      	ldr	r3, [r3, #12]
+ 8000db2:	b2db      	uxtb	r3, r3
+ 8000db4:	73fb      	strb	r3, [r7, #15]
+    }
+    // OVR (Overrun error) 플래그가 설정되었는지 확인
+    if (SPI1->SR & SPI_SR_OVR) {
+ 8000db6:	4b09      	ldr	r3, [pc, #36]	@ (8000ddc <SPI1_IRQHandler+0x40>)
+ 8000db8:	689b      	ldr	r3, [r3, #8]
+ 8000dba:	f003 0340 	and.w	r3, r3, #64	@ 0x40
+ 8000dbe:	2b00      	cmp	r3, #0
+ 8000dc0:	d007      	beq.n	8000dd2 <SPI1_IRQHandler+0x36>
+        // OVR 플래그를 클리어하려면 SR 레지스터를 읽고, DR 레지스터를 읽어야 함.
+        volatile uint32_t dummy_read_sr = SPI1->SR;
+ 8000dc2:	4b06      	ldr	r3, [pc, #24]	@ (8000ddc <SPI1_IRQHandler+0x40>)
+ 8000dc4:	689b      	ldr	r3, [r3, #8]
+ 8000dc6:	60bb      	str	r3, [r7, #8]
+        volatile uint32_t dummy_read_dr = SPI1->DR;
+ 8000dc8:	4b04      	ldr	r3, [pc, #16]	@ (8000ddc <SPI1_IRQHandler+0x40>)
+ 8000dca:	68db      	ldr	r3, [r3, #12]
+ 8000dcc:	607b      	str	r3, [r7, #4]
+        (void)dummy_read_sr; (void)dummy_read_dr; // unused variable warning 방지
+ 8000dce:	68bb      	ldr	r3, [r7, #8]
+ 8000dd0:	687b      	ldr	r3, [r7, #4]
+    }
+}
+ 8000dd2:	bf00      	nop
+ 8000dd4:	3714      	adds	r7, #20
+ 8000dd6:	46bd      	mov	sp, r7
+ 8000dd8:	bc80      	pop	{r7}
+ 8000dda:	4770      	bx	lr
+ 8000ddc:	40013000 	.word	0x40013000
+
+08000de0 <UART2_init>:
+  * @brief  UART2 초기화 함수 (STLink Virtual COM Port용으로 사용 가정)
+  *         TX: PA2, RX: PA3 핀 사용.
+  * @param  baud_rate: 통신 속도 (예: 115200)
+  * @retval 없음
+  */
+void UART2_init(uint32_t baud_rate) {
+ 8000de0:	b580      	push	{r7, lr}
+ 8000de2:	b084      	sub	sp, #16
+ 8000de4:	af00      	add	r7, sp, #0
+ 8000de6:	6078      	str	r0, [r7, #4]
+    // 1. GPIOA 클럭 활성화 (USART2 TX: PA2, RX: PA3 핀이 GPIOA에 연결됨)
+    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+ 8000de8:	4b29      	ldr	r3, [pc, #164]	@ (8000e90 <UART2_init+0xb0>)
+ 8000dea:	699b      	ldr	r3, [r3, #24]
+ 8000dec:	4a28      	ldr	r2, [pc, #160]	@ (8000e90 <UART2_init+0xb0>)
+ 8000dee:	f043 0304 	orr.w	r3, r3, #4
+ 8000df2:	6193      	str	r3, [r2, #24]
+    // 2. USART2 주변장치 클럭 활성화 (USART2는 APB1 버스에 연결됨)
+    RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+ 8000df4:	4b26      	ldr	r3, [pc, #152]	@ (8000e90 <UART2_init+0xb0>)
+ 8000df6:	69db      	ldr	r3, [r3, #28]
+ 8000df8:	4a25      	ldr	r2, [pc, #148]	@ (8000e90 <UART2_init+0xb0>)
+ 8000dfa:	f443 3300 	orr.w	r3, r3, #131072	@ 0x20000
+ 8000dfe:	61d3      	str	r3, [r2, #28]
+
+    // 3. GPIO 핀 설정
+    // PA2 (TX) 핀 설정: 대체 기능 푸시-풀 출력, 50MHz 속도
+    init_gpio(GPIOA, GPIO_PIN_2, GPIO_MODE_OUTPUT_50MHZ_VAL, GPIO_CNF_AF_PP_OUT);
+ 8000e00:	2302      	movs	r3, #2
+ 8000e02:	2203      	movs	r2, #3
+ 8000e04:	2104      	movs	r1, #4
+ 8000e06:	4823      	ldr	r0, [pc, #140]	@ (8000e94 <UART2_init+0xb4>)
+ 8000e08:	f7ff fbee 	bl	80005e8 <init_gpio>
+    // PA3 (RX) 핀 설정: 플로팅 입력
+    init_gpio(GPIOA, GPIO_PIN_3, GPIO_MODE_INPUT_VAL, GPIO_CNF_FLOATING_IN);
+ 8000e0c:	2301      	movs	r3, #1
+ 8000e0e:	2200      	movs	r2, #0
+ 8000e10:	2108      	movs	r1, #8
+ 8000e12:	4820      	ldr	r0, [pc, #128]	@ (8000e94 <UART2_init+0xb4>)
+ 8000e14:	f7ff fbe8 	bl	80005e8 <init_gpio>
+
+    // 4. 보드레이트 설정 (UART2는 PCLK1 클럭을 사용)
+    // PCLK1은 RCC_init에서 32MHz로 설정됨 (SCoreClock / 2)
+    // USARTDIV = PCLK1_Clock / (16 * BaudRate)
+    uint32_t pclk1_freq = RCC_SYSTEM_CLCOK / 2; // PCLK1 = 32MHz
+ 8000e18:	4b1f      	ldr	r3, [pc, #124]	@ (8000e98 <UART2_init+0xb8>)
+ 8000e1a:	60fb      	str	r3, [r7, #12]
+    uint32_t usartdiv = (pclk1_freq * 25) / (4 * baud_rate); // 정수 연산을 위한 트릭
+ 8000e1c:	68fa      	ldr	r2, [r7, #12]
+ 8000e1e:	4613      	mov	r3, r2
+ 8000e20:	009b      	lsls	r3, r3, #2
+ 8000e22:	4413      	add	r3, r2
+ 8000e24:	009a      	lsls	r2, r3, #2
+ 8000e26:	441a      	add	r2, r3
+ 8000e28:	687b      	ldr	r3, [r7, #4]
+ 8000e2a:	009b      	lsls	r3, r3, #2
+ 8000e2c:	fbb2 f3f3 	udiv	r3, r2, r3
+ 8000e30:	60bb      	str	r3, [r7, #8]
+    USART2->BRR = ( (usartdiv / 100) << 4) | ( ( (usartdiv % 100) * 16 + 50) / 100 ); // BRR 레지스터 값 계산
+ 8000e32:	68bb      	ldr	r3, [r7, #8]
+ 8000e34:	4a19      	ldr	r2, [pc, #100]	@ (8000e9c <UART2_init+0xbc>)
+ 8000e36:	fba2 2303 	umull	r2, r3, r2, r3
+ 8000e3a:	095b      	lsrs	r3, r3, #5
+ 8000e3c:	0119      	lsls	r1, r3, #4
+ 8000e3e:	68ba      	ldr	r2, [r7, #8]
+ 8000e40:	4b16      	ldr	r3, [pc, #88]	@ (8000e9c <UART2_init+0xbc>)
+ 8000e42:	fba3 0302 	umull	r0, r3, r3, r2
+ 8000e46:	095b      	lsrs	r3, r3, #5
+ 8000e48:	2064      	movs	r0, #100	@ 0x64
+ 8000e4a:	fb00 f303 	mul.w	r3, r0, r3
+ 8000e4e:	1ad3      	subs	r3, r2, r3
+ 8000e50:	011b      	lsls	r3, r3, #4
+ 8000e52:	3332      	adds	r3, #50	@ 0x32
+ 8000e54:	4a11      	ldr	r2, [pc, #68]	@ (8000e9c <UART2_init+0xbc>)
+ 8000e56:	fba2 2303 	umull	r2, r3, r2, r3
+ 8000e5a:	095b      	lsrs	r3, r3, #5
+ 8000e5c:	4a10      	ldr	r2, [pc, #64]	@ (8000ea0 <UART2_init+0xc0>)
+ 8000e5e:	430b      	orrs	r3, r1
+ 8000e60:	6093      	str	r3, [r2, #8]
+    // 5. USART2 제어 레지스터 (CR1) 설정
+    // - UE 비트 설정: USART 주변장치 활성화
+    // - TE 비트 설정: 송신(Transmit) 기능 활성화
+    // - RE 비트 설정: 수신(Receive) 기능 활성화
+    // (기본 설정: 8 데이터 비트, 패리티 없음, 1 스톱 비트)
+    USART2->CR1 |= USART_CR1_UE;  // USART 주변장치 활성화
+ 8000e62:	4b0f      	ldr	r3, [pc, #60]	@ (8000ea0 <UART2_init+0xc0>)
+ 8000e64:	68db      	ldr	r3, [r3, #12]
+ 8000e66:	4a0e      	ldr	r2, [pc, #56]	@ (8000ea0 <UART2_init+0xc0>)
+ 8000e68:	f443 5300 	orr.w	r3, r3, #8192	@ 0x2000
+ 8000e6c:	60d3      	str	r3, [r2, #12]
+    USART2->CR1 |= USART_CR1_TE;  // 송신 기능 활성화
+ 8000e6e:	4b0c      	ldr	r3, [pc, #48]	@ (8000ea0 <UART2_init+0xc0>)
+ 8000e70:	68db      	ldr	r3, [r3, #12]
+ 8000e72:	4a0b      	ldr	r2, [pc, #44]	@ (8000ea0 <UART2_init+0xc0>)
+ 8000e74:	f043 0308 	orr.w	r3, r3, #8
+ 8000e78:	60d3      	str	r3, [r2, #12]
+    USART2->CR1 |= USART_CR1_RE;  // 수신 기능 활성화
+ 8000e7a:	4b09      	ldr	r3, [pc, #36]	@ (8000ea0 <UART2_init+0xc0>)
+ 8000e7c:	68db      	ldr	r3, [r3, #12]
+ 8000e7e:	4a08      	ldr	r2, [pc, #32]	@ (8000ea0 <UART2_init+0xc0>)
+ 8000e80:	f043 0304 	orr.w	r3, r3, #4
+ 8000e84:	60d3      	str	r3, [r2, #12]
+}
+ 8000e86:	bf00      	nop
+ 8000e88:	3710      	adds	r7, #16
+ 8000e8a:	46bd      	mov	sp, r7
+ 8000e8c:	bd80      	pop	{r7, pc}
+ 8000e8e:	bf00      	nop
+ 8000e90:	40021000 	.word	0x40021000
+ 8000e94:	40010800 	.word	0x40010800
+ 8000e98:	01e84800 	.word	0x01e84800
+ 8000e9c:	51eb851f 	.word	0x51eb851f
+ 8000ea0:	40004400 	.word	0x40004400
+
+08000ea4 <UART2_transmit_char>:
+/**
+  * @brief  UART2로 문자 하나를 전송하는 함수 (블로킹 방식)
+  * @param  data: 전송할 문자
+  * @retval 없음
+  */
+void UART2_transmit_char(char data) {
+ 8000ea4:	b480      	push	{r7}
+ 8000ea6:	b083      	sub	sp, #12
+ 8000ea8:	af00      	add	r7, sp, #0
+ 8000eaa:	4603      	mov	r3, r0
+ 8000eac:	71fb      	strb	r3, [r7, #7]
+    // TXE (Transmit data register Empty) 플래그가 설정될 때까지 대기
+    // TXE는 TDR이 비어있음을 나타내며, 새로운 데이터를 쓸 수 있다는 의미.
+    while (!(USART2->SR & USART_SR_TXE));
+ 8000eae:	bf00      	nop
+ 8000eb0:	4b06      	ldr	r3, [pc, #24]	@ (8000ecc <UART2_transmit_char+0x28>)
+ 8000eb2:	681b      	ldr	r3, [r3, #0]
+ 8000eb4:	f003 0380 	and.w	r3, r3, #128	@ 0x80
+ 8000eb8:	2b00      	cmp	r3, #0
+ 8000eba:	d0f9      	beq.n	8000eb0 <UART2_transmit_char+0xc>
+    USART2->DR = (uint16_t)data; // 데이터를 DR(데이터 레지스터)에 써서 전송 시작
+ 8000ebc:	4a03      	ldr	r2, [pc, #12]	@ (8000ecc <UART2_transmit_char+0x28>)
+ 8000ebe:	79fb      	ldrb	r3, [r7, #7]
+ 8000ec0:	6053      	str	r3, [r2, #4]
+}
+ 8000ec2:	bf00      	nop
+ 8000ec4:	370c      	adds	r7, #12
+ 8000ec6:	46bd      	mov	sp, r7
+ 8000ec8:	bc80      	pop	{r7}
+ 8000eca:	4770      	bx	lr
+ 8000ecc:	40004400 	.word	0x40004400
+
+08000ed0 <UART2_transmit_string>:
+/**
+  * @brief  UART2로 문자열을 전송하는 함수 (블로킹 방식)
+  * @param  str: 전송할 NULL 종료 문자열
+  * @retval 없음
+  */
+void UART2_transmit_string(const char* str) {
+ 8000ed0:	b580      	push	{r7, lr}
+ 8000ed2:	b082      	sub	sp, #8
+ 8000ed4:	af00      	add	r7, sp, #0
+ 8000ed6:	6078      	str	r0, [r7, #4]
+    while (*str) { // 문자열의 끝(NULL 문자)에 도달할 때까지 반복
+ 8000ed8:	e006      	b.n	8000ee8 <UART2_transmit_string+0x18>
+        UART2_transmit_char(*str++); // 한 문자씩 전송하고 다음 문자로 이동
+ 8000eda:	687b      	ldr	r3, [r7, #4]
+ 8000edc:	1c5a      	adds	r2, r3, #1
+ 8000ede:	607a      	str	r2, [r7, #4]
+ 8000ee0:	781b      	ldrb	r3, [r3, #0]
+ 8000ee2:	4618      	mov	r0, r3
+ 8000ee4:	f7ff ffde 	bl	8000ea4 <UART2_transmit_char>
+    while (*str) { // 문자열의 끝(NULL 문자)에 도달할 때까지 반복
+ 8000ee8:	687b      	ldr	r3, [r7, #4]
+ 8000eea:	781b      	ldrb	r3, [r3, #0]
+ 8000eec:	2b00      	cmp	r3, #0
+ 8000eee:	d1f4      	bne.n	8000eda <UART2_transmit_string+0xa>
+    }
+}
+ 8000ef0:	bf00      	nop
+ 8000ef2:	bf00      	nop
+ 8000ef4:	3708      	adds	r7, #8
+ 8000ef6:	46bd      	mov	sp, r7
+ 8000ef8:	bd80      	pop	{r7, pc}
+	...
+
+08000efc <Reset_Handler>:
+
+  .section .text.Reset_Handler
+  .weak Reset_Handler
+  .type Reset_Handler, %function
+Reset_Handler:
+  ldr   r0, =_estack
+ 8000efc:	480d      	ldr	r0, [pc, #52]	@ (8000f34 <LoopForever+0x2>)
+  mov   sp, r0          /* set stack pointer */
+ 8000efe:	4685      	mov	sp, r0
+/* Call the clock system initialization function.*/
+  bl  SystemInit
+ 8000f00:	f3af 8000 	nop.w
+
+/* Copy the data segment initializers from flash to SRAM */
+  ldr r0, =_sdata
+ 8000f04:	480c      	ldr	r0, [pc, #48]	@ (8000f38 <LoopForever+0x6>)
+  ldr r1, =_edata
+ 8000f06:	490d      	ldr	r1, [pc, #52]	@ (8000f3c <LoopForever+0xa>)
+  ldr r2, =_sidata
+ 8000f08:	4a0d      	ldr	r2, [pc, #52]	@ (8000f40 <LoopForever+0xe>)
+  movs r3, #0
+ 8000f0a:	2300      	movs	r3, #0
+  b LoopCopyDataInit
+ 8000f0c:	e002      	b.n	8000f14 <LoopCopyDataInit>
+
+08000f0e <CopyDataInit>:
+
+CopyDataInit:
+  ldr r4, [r2, r3]
+ 8000f0e:	58d4      	ldr	r4, [r2, r3]
+  str r4, [r0, r3]
+ 8000f10:	50c4      	str	r4, [r0, r3]
+  adds r3, r3, #4
+ 8000f12:	3304      	adds	r3, #4
+
+08000f14 <LoopCopyDataInit>:
+
+LoopCopyDataInit:
+  adds r4, r0, r3
+ 8000f14:	18c4      	adds	r4, r0, r3
+  cmp r4, r1
+ 8000f16:	428c      	cmp	r4, r1
+  bcc CopyDataInit
+ 8000f18:	d3f9      	bcc.n	8000f0e <CopyDataInit>
+
+/* Zero fill the bss segment. */
+  ldr r2, =_sbss
+ 8000f1a:	4a0a      	ldr	r2, [pc, #40]	@ (8000f44 <LoopForever+0x12>)
+  ldr r4, =_ebss
+ 8000f1c:	4c0a      	ldr	r4, [pc, #40]	@ (8000f48 <LoopForever+0x16>)
+  movs r3, #0
+ 8000f1e:	2300      	movs	r3, #0
+  b LoopFillZerobss
+ 8000f20:	e001      	b.n	8000f26 <LoopFillZerobss>
+
+08000f22 <FillZerobss>:
+
+FillZerobss:
+  str  r3, [r2]
+ 8000f22:	6013      	str	r3, [r2, #0]
+  adds r2, r2, #4
+ 8000f24:	3204      	adds	r2, #4
+
+08000f26 <LoopFillZerobss>:
+
+LoopFillZerobss:
+  cmp r2, r4
+ 8000f26:	42a2      	cmp	r2, r4
+  bcc FillZerobss
+ 8000f28:	d3fb      	bcc.n	8000f22 <FillZerobss>
+
+
+/* Call static constructors */
+  bl __libc_init_array
+ 8000f2a:	f000 f811 	bl	8000f50 <__libc_init_array>
+/* Call the application's entry point.*/
+
+  bl main
+ 8000f2e:	f7ff fe03 	bl	8000b38 <main>
+
+08000f32 <LoopForever>:
+
+LoopForever:
+  b LoopForever
+ 8000f32:	e7fe      	b.n	8000f32 <LoopForever>
+  ldr   r0, =_estack
+ 8000f34:	20005000 	.word	0x20005000
+  ldr r0, =_sdata
+ 8000f38:	20000000 	.word	0x20000000
+  ldr r1, =_edata
+ 8000f3c:	20000000 	.word	0x20000000
+  ldr r2, =_sidata
+ 8000f40:	080012e4 	.word	0x080012e4
+  ldr r2, =_sbss
+ 8000f44:	20000000 	.word	0x20000000
+  ldr r4, =_ebss
+ 8000f48:	20000020 	.word	0x20000020
+
+08000f4c <ADC1_2_IRQHandler>:
+ * @retval : None
+*/
+  .section .text.Default_Handler,"ax",%progbits
+Default_Handler:
+Infinite_Loop:
+  b Infinite_Loop
+ 8000f4c:	e7fe      	b.n	8000f4c <ADC1_2_IRQHandler>
+	...
+
+08000f50 <__libc_init_array>:
+ 8000f50:	b570      	push	{r4, r5, r6, lr}
+ 8000f52:	2600      	movs	r6, #0
+ 8000f54:	4d0c      	ldr	r5, [pc, #48]	@ (8000f88 <__libc_init_array+0x38>)
+ 8000f56:	4c0d      	ldr	r4, [pc, #52]	@ (8000f8c <__libc_init_array+0x3c>)
+ 8000f58:	1b64      	subs	r4, r4, r5
+ 8000f5a:	10a4      	asrs	r4, r4, #2
+ 8000f5c:	42a6      	cmp	r6, r4
+ 8000f5e:	d109      	bne.n	8000f74 <__libc_init_array+0x24>
+ 8000f60:	f000 f81a 	bl	8000f98 <_init>
+ 8000f64:	2600      	movs	r6, #0
+ 8000f66:	4d0a      	ldr	r5, [pc, #40]	@ (8000f90 <__libc_init_array+0x40>)
+ 8000f68:	4c0a      	ldr	r4, [pc, #40]	@ (8000f94 <__libc_init_array+0x44>)
+ 8000f6a:	1b64      	subs	r4, r4, r5
+ 8000f6c:	10a4      	asrs	r4, r4, #2
+ 8000f6e:	42a6      	cmp	r6, r4
+ 8000f70:	d105      	bne.n	8000f7e <__libc_init_array+0x2e>
+ 8000f72:	bd70      	pop	{r4, r5, r6, pc}
+ 8000f74:	f855 3b04 	ldr.w	r3, [r5], #4
+ 8000f78:	4798      	blx	r3
+ 8000f7a:	3601      	adds	r6, #1
+ 8000f7c:	e7ee      	b.n	8000f5c <__libc_init_array+0xc>
+ 8000f7e:	f855 3b04 	ldr.w	r3, [r5], #4
+ 8000f82:	4798      	blx	r3
+ 8000f84:	3601      	adds	r6, #1
+ 8000f86:	e7f2      	b.n	8000f6e <__libc_init_array+0x1e>
+ 8000f88:	080012dc 	.word	0x080012dc
+ 8000f8c:	080012dc 	.word	0x080012dc
+ 8000f90:	080012dc 	.word	0x080012dc
+ 8000f94:	080012e0 	.word	0x080012e0
+
+08000f98 <_init>:
+ 8000f98:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 8000f9a:	bf00      	nop
+ 8000f9c:	bcf8      	pop	{r3, r4, r5, r6, r7}
+ 8000f9e:	bc08      	pop	{r3}
+ 8000fa0:	469e      	mov	lr, r3
+ 8000fa2:	4770      	bx	lr
+
+08000fa4 <_fini>:
+ 8000fa4:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 8000fa6:	bf00      	nop
+ 8000fa8:	bcf8      	pop	{r3, r4, r5, r6, r7}
+ 8000faa:	bc08      	pop	{r3}
+ 8000fac:	469e      	mov	lr, r3
+ 8000fae:	4770      	bx	lr

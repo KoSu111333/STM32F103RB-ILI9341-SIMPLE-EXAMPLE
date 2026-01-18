@@ -1,0 +1,2 @@
+../Src/gpio.c:19:6:init_gpio	8
+../Src/gpio.c:65:6:GPIO_WritePin	2

@@ -1,0 +1,5 @@
+../driver/CMSIS/Include/core_cm3.h:1511:22:__NVIC_EnableIRQ	16	static
+../driver/CMSIS/Include/core_cm3.h:1639:22:__NVIC_SetPriority	16	static
+../Src/spi.c:15:6:SPI1_init	8	static
+../Src/spi.c:56:9:SPI1_transfer	16	static
+../Src/spi.c:74:6:SPI1_IRQHandler	24	static

@@ -1,0 +1,15 @@
+../Src/ILI_9341.c:5:6:ILI9341_init_pins	8	static
+../Src/ILI_9341.c:18:6:ILI9341_CS_Enable	8	static
+../Src/ILI_9341.c:21:6:ILI9341_CS_Disable	8	static
+../Src/ILI_9341.c:26:6:ILI9341_DC_Set	8	static
+../Src/ILI_9341.c:29:6:ILI9341_DC_Reset	8	static
+../Src/ILI_9341.c:34:6:ILI9341_RST_Set	8	static
+../Src/ILI_9341.c:37:6:ILI9341_RST_Reset	8	static
+../Src/ILI_9341.c:46:6:ILI9341_WriteCommand	16	static
+../Src/ILI_9341.c:57:6:ILI9341_WriteData	16	static
+../Src/ILI_9341.c:68:6:ILI9341_init	8	static
+../Src/ILI_9341.c:219:6:ILI9341_SetAddressWindow	24	static
+../Src/ILI_9341.c:239:6:ILI9341_FillScreen	24	static
+../Src/ILI_9341.c:258:6:ILI9341_DrawPixel	16	static
+../Src/ILI_9341.c:276:6:ILI9341_DrawRectangle	32	static
+../Src/ILI_9341.c:303:6:ILI9341_DrawImage	40	static

@@ -1,0 +1,8 @@
+../driver/CMSIS/Include/core_cm3.h:1639:22:__NVIC_SetPriority	2
+../driver/CMSIS/Include/core_cm3.h:1834:26:SysTick_Config	2
+../Src/main.c:23:6:SysTick_Handler	2
+../Src/main.c:30:6:delay_ms	2
+../Src/main.c:45:6:RCC_init	4
+../Src/main.c:102:6:ili9341_draw_char_custom	10
+../Src/main.c:134:6:ili9341_draw_string_custom	4
+../Src/main.c:159:5:main	1
