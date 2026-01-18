@@ -1,5 +1,5 @@
 # STM32F103RB-ILI9341-SIMPLE-EXAMPLE
- 이 문서는 STM32F103RB 마이크로컨트롤러를 사용하여 ILI9341 TFT LCD를 제어하는 간단한 프로젝트입니다.
+ 이 프로젝트는 NUCLE32F103RB MCU를 사용하여 Register 제어 기반으로 핵심 드라이버를 구성하여 ILI9341 TFT LCD를 제어하는 간단한 프로젝트입니다.
  
 # ILI9341 LCD 연결 및 동작 스펙 (STM32F103RB)
 
